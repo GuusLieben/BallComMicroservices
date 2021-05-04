@@ -39,3 +39,6 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+# Maven default output folder
+target/

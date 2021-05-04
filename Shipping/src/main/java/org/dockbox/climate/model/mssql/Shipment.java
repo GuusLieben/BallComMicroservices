@@ -1,24 +1,35 @@
 package org.dockbox.climate.model.mssql;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import org.dockbox.climate.model.filters.IdentifierPresentFilter;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "shipments")
+@JsonInclude(Include.NON_DEFAULT)
 public class Shipment {
 
     @Id
-    @JsonIgnore
+    @JsonInclude(value = Include.CUSTOM, valueFilter = IdentifierPresentFilter.class)
+    @GeneratedValue
     private Long shipmentId;
     private String firstName;
     private String lastName;
@@ -26,10 +37,17 @@ public class Shipment {
     private String city;
     private String street;
     private short houseNumber;
+
+    @Column(nullable = true)
     private char addition;
     private String postalCode;
 
     private double weightInKg;
     private String state;
+
+    @ManyToOne
+    @JoinColumn(name = "shipper_id")
+    @JsonInclude(Include.NON_NULL)
+    private Shipper shipper;
 
 }

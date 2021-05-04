@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ShipmentRepository extends CrudRepository<Shipment, String> {
 
-    Iterable<Shipment> findAllByShipmentIdEquals(long userId);
+    Shipment findFirstByShipmentIdEquals(long shipmentId);
 
 }

@@ -6,6 +6,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import at.favre.lib.crypto.bcrypt.BCrypt.Hasher;
+
 @SpringBootApplication
 public class BallComAuthApp {
 
@@ -17,8 +20,13 @@ public class BallComAuthApp {
     private String queueKey;
 
     @Bean
-    public Queue getShipmentQueue() {
+    public Queue getAuthQueue() {
         return new Queue(this.queueKey, false);
+    }
+
+    @Bean
+    public Hasher encoder() {
+        return BCrypt.withDefaults();
     }
 
 }

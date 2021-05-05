@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -37,6 +39,8 @@ public class User implements Serializable {
     @Column(name = "id")
     private Long userId;
 
+    private UUID guid;
+
     @ElementCollection
     @CollectionTable(name = "user_meta", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     @MapKeyColumn(name = "`key`")
@@ -48,4 +52,8 @@ public class User implements Serializable {
 
     private UserRole role;
 
+    @PrePersist
+    protected void onCreate() {
+        this.setGuid(java.util.UUID.randomUUID());
+    }
 }

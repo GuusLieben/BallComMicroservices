@@ -1,9 +1,10 @@
-server:
-  port: 9090
 zuul:
   routes:
-    foos:
+    shipments:
       path: /shipments/**
-      url: http://localhost:8080/api/shipments
+      url: http://localhost:8082/api/shipments
+    auth:
+      path: /auth/**
+      url: http://localhost:8081/api/users
 jwt:
   secret: ballComSuperSecretKey

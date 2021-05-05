@@ -1,28 +1,33 @@
 {
   "properties": [
     {
-      "name": "ball.rabbitmq.received",
+      "name": "ball.rabbitmq.exchange",
       "type": "java.lang.String",
-      "description": "The RabbitMQ exchange key for received shipment events."
-    },
-    {
-      "name": "ball.rabbitmq.registered",
-      "type": "java.lang.String",
-      "description": "The RabbitMQ exchange key for registered shipment events."
+      "description": "Global exchange for Ball.com services."
     },
     {
       "name": "ball.rabbitmq.queue",
       "type": "java.lang.String",
-      "description": "The RabbitMQ queue key for all shipment related events."
+      "description": "Service specific queue for the Shipment service."
     },
     {
-      "name": "ball.rabbitmq.shipped",
+      "name": "ball.rabbitmq.header.registered",
       "type": "java.lang.String",
-      "description": "The RabbitMQ exchange key for shipped shipment events."
+      "description": "Message type for registered shipments."
     },
     {
-      "name": "ball.rabbitmq.delivered",
+      "name": "ball.rabbitmq.header.received",
       "type": "java.lang.String",
-      "description": "The RabbitMQ exchange key for delivered shipment events."
+      "description": "Message type for received shipments."
+    },
+    {
+      "name": "ball.rabbitmq.header.shipped",
+      "type": "java.lang.String",
+      "description": "Message type for shipped shipments."
+    },
+    {
+      "name": "ball.rabbitmq.header.delivered",
+      "type": "java.lang.String",
+      "description": "Message type for delivered shipments."
     }
   ] }

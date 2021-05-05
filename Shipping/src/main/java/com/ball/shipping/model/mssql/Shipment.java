@@ -1,5 +1,6 @@
 package com.ball.shipping.model.mssql;
 
+import com.ball.shipping.model.common.ShipmentState;
 import com.ball.shipping.model.filters.IdentifierPresentFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -44,7 +45,7 @@ public class Shipment implements Serializable {
     private String postalCode;
 
     private double weightInKg;
-    private String state;
+    private ShipmentState state;
 
     @ManyToOne
     @JoinColumn(name = "shipper_id")

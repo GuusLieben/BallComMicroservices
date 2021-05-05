@@ -1,10 +1,12 @@
 package com.ball.shipping.rest;
 
+import com.ball.shipping.amqp.RabbitMQSender;
+import com.ball.shipping.model.common.ShipmentState;
 import com.ball.shipping.model.mssql.Shipment;
 import com.ball.shipping.model.mssql.Shipper;
+import com.ball.shipping.model.rest.ShipmentUpdate;
 import com.ball.shipping.repository.ShipmentRepository;
 import com.ball.shipping.repository.ShipperRepository;
-import com.ball.shipping.amqp.RabbitMQSender;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,26 +33,26 @@ public class ShipmentController {
         this.sender = sender;
     }
 
-    @RequestMapping(value = "/shipments", method = RequestMethod.POST)
-    public Shipment createShipment(@RequestBody Shipment shipment) {
-        if (shipment.getShipper() != null) {
-            if (shipment.getShipper().getShipperId() != null) {
-                Shipper shipper = this.shipperRepository.findFirstByShipperIdEquals(shipment.getShipper().getShipperId());
-                shipment.setShipper(shipper);
-            } else {
-                shipment.setShipper(this.shipperRepository.save(shipment.getShipper()));
-            }
+    @RequestMapping(value = "/shipments/{id}", method = RequestMethod.PATCH)
+    public Shipment processShipment(@PathVariable("id") long id, @RequestBody ShipmentUpdate update) {
+        update.setShipmentId(id);
+        Shipment shipment = this.shipmentRepository.findFirstByShipmentIdEquals(id);
+        if (update.getState() == ShipmentState.REGISTERED) {
+            return shipment;
+        } else {
+            shipment.setState(update.getState());
+            Shipment savedShipment = this.shipmentRepository.save(shipment);
+            savedShipment.getState().perform(this.sender, savedShipment);
+            savedShipment.getShipper().setShipment(null);
+            return savedShipment;
         }
-        Shipment savedShipment = this.shipmentRepository.save(shipment);
-        this.sender.shipmentRegistered(savedShipment);
-        savedShipment.getShipper().setShipment(null);
-        return savedShipment;
     }
 
     @RequestMapping("/shipments/{id}")
     public Shipment getShipment(@PathVariable("id") long id) {
         Shipment shipment = this.shipmentRepository.findFirstByShipmentIdEquals(id);
         shipment.getShipper().setShipment(null);
+        this.sender.shipmentRegistered(shipment);
         shipment.setShipmentId(-1L); // Exclude from results
         return shipment;
     }
@@ -66,5 +68,7 @@ public class ShipmentController {
                 })
                 .collect(Collectors.toList());
     }
+
+
 
 }

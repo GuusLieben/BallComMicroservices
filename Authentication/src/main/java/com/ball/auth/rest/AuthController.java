@@ -69,4 +69,23 @@ public class AuthController {
         }
     }
 
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Object login(@RequestBody LoginModel model) {
+        Optional<User> user = this.userRepository.findByEmailEquals(model.getEmail());
+        if (user.isPresent()) {
+            Result result = BCrypt.verifyer().verify(
+                    model.getPassword().toCharArray(),
+                    user.get().getPasswordHash()
+            );
+            if (result.verified) {
+                return new VerifiedModel(this.tokenUtil.generateToken(user.get()));
+            }
+            else {
+                return new ErrorObject(403, "Not permitted", "Invalid login credentials");
+            }
+        }
+        else {
+            return new ErrorObject(403, "Not permitted", "No user with that email exists");
+        }
+    }
 }

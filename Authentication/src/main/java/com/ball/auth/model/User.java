@@ -5,12 +5,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -30,10 +34,14 @@ public class User implements Serializable {
     @Id
     @JsonIgnore
     @GeneratedValue
+    @Column(name = "id")
     private Long userId;
 
-    @OneToMany(mappedBy = "user")
-    private List<UserMeta> meta;
+    @ElementCollection
+    @CollectionTable(name = "user_meta", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    @MapKeyColumn(name = "`key`")
+    @Column(name = "`value`")
+    private Map<String, String> meta;
 
     private String email;
     private String passwordHash;

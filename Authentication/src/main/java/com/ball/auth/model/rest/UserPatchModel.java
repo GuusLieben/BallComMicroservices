@@ -1,10 +1,9 @@
 package com.ball.auth.model.rest;
 
-import com.ball.auth.model.UserMeta;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +14,6 @@ import lombok.Setter;
 public class UserPatchModel {
 
     private String email;
-    private List<UserMeta> meta;
+    private Map<String, String> meta;
 
 }

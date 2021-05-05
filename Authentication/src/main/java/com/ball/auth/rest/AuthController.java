@@ -40,6 +40,9 @@ public class AuthController {
             User user = lookup.get();
 
             for (Entry<String, String> entry : patchModel.getMeta().entrySet()) {
+                if (JwtTokenUtil.SKIP_KEYS.contains(entry.getKey())) {
+                    return new ErrorObject(403, "Illegal key", "Metadata key '" + entry.getKey() + "' is reserved and cannot be used");
+                }
                 user.getMeta().put(entry.getKey(), entry.getValue());
             }
             return this.userRepository.save(user);

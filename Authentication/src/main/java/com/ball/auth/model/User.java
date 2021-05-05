@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -55,5 +57,10 @@ public class User implements Serializable {
     @PrePersist
     protected void onCreate() {
         this.setGuid(java.util.UUID.randomUUID());
+    }
+
+    @PostLoad
+    protected void afterLoad() {
+        if (this.getMeta() == null) this.setMeta(new HashMap<>());
     }
 }

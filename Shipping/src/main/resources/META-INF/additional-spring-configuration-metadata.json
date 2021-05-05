@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "ball.rabbitmq.received",
+      "type": "java.lang.String",
+      "description": "The RabbitMQ exchange key for received shipment events."
+    },
+    {
+      "name": "ball.rabbitmq.registered",
+      "type": "java.lang.String",
+      "description": "The RabbitMQ exchange key for registered shipment events."
+    },
+    {
+      "name": "ball.rabbitmq.queue",
+      "type": "java.lang.String",
+      "description": "The RabbitMQ queue key for all shipment related events."
+    },
+    {
+      "name": "ball.rabbitmq.shipped",
+      "type": "java.lang.String",
+      "description": "The RabbitMQ exchange key for shipped shipment events."
+    },
+    {
+      "name": "ball.rabbitmq.delivered",
+      "type": "java.lang.String",
+      "description": "The RabbitMQ exchange key for delivered shipment events."
+    }
+  ] }

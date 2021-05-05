@@ -1,44 +1,47 @@
 package com.ball.auth.model.amqp;
 
 import com.ball.auth.model.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ball.auth.model.UserRole;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.UUID;
 
 import lombok.Getter;
 
 @Getter
 public abstract class Event implements Serializable {
 
-    @JsonProperty
-    private String name;
+    private UUID guid;
+    private Map<String, String> meta;
+    private String email;
+    private UserRole role;
 
-    @JsonProperty
-    private User user;
-
-    protected Event(String name, User user) {
-        this.name = name;
-        this.user = user;
+    protected Event(User user) {
+        this.guid = user.getGuid();
+        this.meta = user.getMeta();
+        this.email = user.getEmail();
+        this.role = user.getRole();
     }
 
     public static class Created extends Event {
 
-        public Created(String name, User customer) {
-            super(name, customer);
+        public Created(User customer) {
+            super(customer);
         }
     }
 
     public static class Updated extends Event {
 
-        public Updated(String name, User customer) {
-            super(name, customer);
+        public Updated(User customer) {
+            super(customer);
         }
     }
 
     public static class Deleted extends Event {
 
-        public Deleted(String name, User customer) {
-            super(name, customer);
+        public Deleted(User customer) {
+            super(customer);
         }
     }
 }

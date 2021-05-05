@@ -53,7 +53,7 @@ public class RabbitMQSender {
             default:
                 throw new RuntimeException("Unsupported role: " + user.getRole());
         }
-        this.broadcast(new Event.Created(header, user), header);
+        this.broadcast(new Event.Created(user), header);
     }
 
     public void userUpdated(User user) {
@@ -71,7 +71,7 @@ public class RabbitMQSender {
             default:
                 throw new RuntimeException("Unsupported role: " + user.getRole());
         }
-        this.broadcast(new Event.Updated(header, user), header);
+        this.broadcast(new Event.Updated(user), header);
     }
 
     public void userDeleted(User user) {
@@ -89,7 +89,7 @@ public class RabbitMQSender {
             default:
                 throw new RuntimeException("Unsupported role: " + user.getRole());
         }
-        this.broadcast(new Event.Deleted(header, user), header);
+        this.broadcast(new Event.Deleted(user), header);
     }
 
     private void broadcast(Event event, String messageType) {

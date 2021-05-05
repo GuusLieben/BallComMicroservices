@@ -41,3 +41,6 @@ msbuild.wrn
 .vs/
 */.gradle
 */gradle
+**/.mvn
+Gateway/mvnw
+*.cmd

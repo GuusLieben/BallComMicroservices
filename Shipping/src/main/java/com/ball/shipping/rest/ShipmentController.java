@@ -1,9 +1,11 @@
-package org.dockbox.climate.rest;
+package com.ball.shipping.rest;
 
-import org.dockbox.climate.model.mssql.Shipment;
-import org.dockbox.climate.model.mssql.Shipper;
-import org.dockbox.climate.repository.ShipmentRepository;
-import org.dockbox.climate.repository.ShipperRepository;
+import com.ball.shipping.model.mssql.Shipment;
+import com.ball.shipping.model.mssql.Shipper;
+import com.ball.shipping.repository.ShipmentRepository;
+import com.ball.shipping.repository.ShipperRepository;
+import com.ball.shipping.amqp.RabbitMQSender;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,18 +23,28 @@ public class ShipmentController {
 
     private final ShipmentRepository shipmentRepository;
     private final ShipperRepository shipperRepository;
+    private final RabbitMQSender sender;
 
-    public ShipmentController(ShipmentRepository shipmentRepository, ShipperRepository shipperRepository) {
+    public ShipmentController(ShipmentRepository shipmentRepository, ShipperRepository shipperRepository, RabbitMQSender sender) {
         this.shipmentRepository = shipmentRepository;
         this.shipperRepository = shipperRepository;
+        this.sender = sender;
     }
 
     @RequestMapping(value = "/shipments", method = RequestMethod.POST)
     public Shipment createShipment(@RequestBody Shipment shipment) {
         if (shipment.getShipper() != null) {
-            this.shipperRepository.save(shipment.getShipper());
+            if (shipment.getShipper().getShipperId() != null) {
+                Shipper shipper = this.shipperRepository.findFirstByShipperIdEquals(shipment.getShipper().getShipperId());
+                shipment.setShipper(shipper);
+            } else {
+                shipment.setShipper(this.shipperRepository.save(shipment.getShipper()));
+            }
         }
-        return this.shipmentRepository.save(shipment);
+        Shipment savedShipment = this.shipmentRepository.save(shipment);
+        this.sender.shipmentRegistered(savedShipment);
+        savedShipment.getShipper().setShipment(null);
+        return savedShipment;
     }
 
     @RequestMapping("/shipments/{id}")

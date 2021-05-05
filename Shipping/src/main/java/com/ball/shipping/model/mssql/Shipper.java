@@ -1,10 +1,10 @@
-package org.dockbox.climate.model.mssql;
+package com.ball.shipping.model.mssql;
 
+import com.ball.shipping.model.filters.IdentifierPresentFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import org.dockbox.climate.model.filters.IdentifierPresentFilter;
-
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @Table(name = "shippers")
 @JsonInclude(Include.NON_DEFAULT)
 @Setter
-public class Shipper {
+public class Shipper implements Serializable {
 
     @Id
     @JsonInclude(value = Include.CUSTOM, valueFilter = IdentifierPresentFilter.class)

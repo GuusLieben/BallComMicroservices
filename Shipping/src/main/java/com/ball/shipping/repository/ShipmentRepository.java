@@ -1,6 +1,6 @@
-package org.dockbox.climate.repository;
+package com.ball.shipping.repository;
 
-import org.dockbox.climate.model.mssql.Shipment;
+import com.ball.shipping.model.mssql.Shipment;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ShipmentRepository extends CrudRepository<Shipment, String> {

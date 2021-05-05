@@ -1,6 +1,7 @@
-package org.dockbox.climate.rest;
+package com.ball.shipping.rest;
 
-import org.dockbox.climate.model.ErrorObject;
+import com.ball.shipping.model.ErrorObject;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

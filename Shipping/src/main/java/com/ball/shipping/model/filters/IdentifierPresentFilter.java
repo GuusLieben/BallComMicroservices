@@ -1,4 +1,4 @@
-package org.dockbox.climate.model.filters;
+package com.ball.shipping.model.filters;
 
 public class IdentifierPresentFilter {
     @Override

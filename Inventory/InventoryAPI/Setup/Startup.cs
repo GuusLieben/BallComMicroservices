@@ -1,7 +1,11 @@
+using InventoryDomain.Services;
+using InventoryInfrastructure;
+using InventoryInfrastructure.RabbitMQ;
+using InventoryInfrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BallInventoryAPI
+namespace InventoryAPI.Setup
 {
 	public class Startup
 	{
@@ -30,8 +34,18 @@ namespace BallInventoryAPI
 			services.AddControllers();
 			services.AddSwaggerGen(c =>
 			{
-				c.SwaggerDoc("v1", new OpenApiInfo { Title = "BallInventoryAPI", Version = "v1" });
+				c.SwaggerDoc("v1", new OpenApiInfo { Title = "InventoryAPI", Version = "v1" });
 			});
+
+			services.AddDbContext<InventoryDbContext>(options =>
+			{
+				options.UseSqlServer(Configuration["Database:Main"], actions => actions.MigrationsAssembly("InventoryInfrastructure"));
+			});
+
+			services.AddScoped<ISupplierRepository, EFSupplierRepository>();
+
+			services.UseRabbitMQMessageHandler(Configuration);
+			services.AddHostedService<RabbitMQMessageManager>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,10 +55,8 @@ namespace BallInventoryAPI
 			{
 				app.UseDeveloperExceptionPage();
 				app.UseSwagger();
-				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BallInventoryAPI v1"));
+				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "InventoryAPI v1"));
 			}
-
-			app.UseHttpsRedirection();
 
 			app.UseRouting();
 
@@ -54,6 +66,10 @@ namespace BallInventoryAPI
 			{
 				endpoints.MapControllers();
 			});
+
+			// auto migrate db
+			using IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+			scope.ServiceProvider.GetService<InventoryDbContext>().MigrateDB();
 		}
 	}
 }

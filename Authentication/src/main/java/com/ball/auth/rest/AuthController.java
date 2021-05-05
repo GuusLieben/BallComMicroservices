@@ -1,14 +1,19 @@
 package com.ball.auth.rest;
 
 import com.ball.auth.amqp.RabbitMQSender;
+import com.ball.auth.jwt.JwtTokenUtil;
 import com.ball.auth.model.ErrorObject;
 import com.ball.auth.model.User;
+import com.ball.auth.model.rest.LoginModel;
+import com.ball.auth.model.rest.TokenValidationModel;
 import com.ball.auth.model.rest.UserCreateModel;
 import com.ball.auth.model.rest.UserPatchModel;
+import com.ball.auth.model.rest.VerifiedModel;
 import com.ball.auth.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Hasher;
+import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,11 +33,13 @@ public class AuthController {
     private final Hasher hasher;
     private final UserRepository userRepository;
     private final RabbitMQSender sender;
+    private final JwtTokenUtil tokenUtil;
 
-    public AuthController(Hasher hasher, UserRepository userRepository, RabbitMQSender sender) {
+    public AuthController(Hasher hasher, UserRepository userRepository, RabbitMQSender sender, JwtTokenUtil tokenUtil) {
         this.hasher = hasher;
         this.userRepository = userRepository;
         this.sender = sender;
+        this.tokenUtil = tokenUtil;
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.PATCH)
@@ -69,6 +78,11 @@ public class AuthController {
         }
     }
 
+    @RequestMapping(value = "/verify", method = RequestMethod.POST)
+    public TokenValidationModel isValidSession(@RequestHeader("X-token") String token) {
+        return new TokenValidationModel(token, !this.tokenUtil.isTokenExpired(token));
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Object login(@RequestBody LoginModel model) {
         Optional<User> user = this.userRepository.findByEmailEquals(model.getEmail());
@@ -88,4 +102,10 @@ public class AuthController {
             return new ErrorObject(403, "Not permitted", "No user with that email exists");
         }
     }
+
+    @RequestMapping(value = "/payload", method = RequestMethod.POST)
+    public Object getPayload(@RequestHeader("X-token") String token) {
+        return this.tokenUtil.getRawPayload(token);
+    }
+
 }

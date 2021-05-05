@@ -1,84 +1,87 @@
-﻿using InventoryInfrastructure.RabbitMQ.Interfaces;
-using Polly;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+﻿using InventoryDomain.Events;
+using InventoryDomain.Models;
+using InventoryDomain.Services;
+using InventoryInfrastructure.RabbitMQ.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace InventoryInfrastructure.RabbitMQ
 {
-	public class RabbitMQMessageHandler : IMessageHandler
+	public class RabbitMQMessageHandler : IMessageHandler, IHostedService
 	{
-		private readonly string _host;
-		private readonly int _port;
-		private readonly string _username;
-		private readonly string _password;
-		private readonly string _exchange;
-		private readonly string _queue;
+		private readonly IMessageListener _messageListener;
+		private readonly ISupplierRepository _supplierRepository;
+		private readonly IServiceScope _scope;
 
-		private IMessageHandlerCallback _callback;
-		private AsyncEventingBasicConsumer _consumer;
-		private IModel _model;
-		private IConnection _connection;
-		private string _consumerTag;
-
-		public RabbitMQMessageHandler(string host, int port, string username, string password, string exchange, string queue)
+		public RabbitMQMessageHandler(IServiceScopeFactory scopeFactory)
 		{
-			_host = host;
-			_port = port;
-			_username = username;
-			_password = password;
-			_exchange = exchange;
-			_queue = queue;
+			_scope = scopeFactory.CreateScope();
+			_messageListener = _scope.ServiceProvider.GetRequiredService<IMessageListener>();
+			_supplierRepository = _scope.ServiceProvider.GetRequiredService<ISupplierRepository>();
 		}
 
-		public void Start(IMessageHandlerCallback callback)
-		{
-			_callback = callback;
 
-			Policy
-				.Handle<Exception>()
-				.WaitAndRetry(9, r => TimeSpan.FromSeconds(5))
-				.Execute(() =>
+		public Task StartAsync(CancellationToken cancellationToken)
+		{
+			_messageListener.Start(this);
+			return Task.CompletedTask;
+		}
+
+		public Task StopAsync(CancellationToken cancellationToken)
+		{
+			_messageListener.Stop();
+			_scope.Dispose();
+
+			return Task.CompletedTask;
+		}
+
+		public async Task<bool> HandleMessageAsync(string messageType, string message)
+		{
+			try
+			{
+				JObject messageObject = MessageSerializer.Deserialize(message);
+				switch (messageType)
 				{
-					ConnectionFactory factory = new ConnectionFactory() { HostName = _host, UserName = _username, Password = _password, DispatchConsumersAsync = true};
+					case "SupplierAdded":
+						await HandleAsync(messageObject.ToObject<SupplierAdded>());
+						break;
+					default:
+						break;
+				}
+			}
+			catch(Exception)
+			{
+				return false;
+			}
 
-					_connection = factory.CreateConnection();
-					_model = _connection.CreateModel();
+            return true;
+        }
 
-					_model.ExchangeDeclare(_exchange, "fanout", false, false);
-					_model.QueueDeclare(_queue, durable: true, autoDelete: false, exclusive: false);
-					_model.QueueBind(_queue, _exchange, "");
-
-					_consumer = new AsyncEventingBasicConsumer(_model);
-					_consumer.Received += async (sender, ea) =>
-					{
-						if (await HandleEvent(ea))
-						{
-							_model.BasicAck(ea.DeliveryTag, false);
-						}
-					};
-
-					_consumerTag = _model.BasicConsume(_queue, false, _consumer);
-				});
-		}
-
-		public void Stop()
+		private Task HandleAsync(SupplierAdded evt)
 		{
-			_model.BasicCancel(_consumerTag);
-			_model.Close(200, "Goodbye");
-			_connection.Close();
-		}
+			Debug.WriteLine("-------------------------------------------");
+			Debug.WriteLine("SupplierId: " + evt.Guid);
+			Debug.WriteLine("Email: " + evt.Email);
+			Debug.WriteLine("Name: " +  evt.Meta["company"]);
+			Debug.WriteLine("-------------------------------------------");
 
-		private Task<bool> HandleEvent(BasicDeliverEventArgs ea)
-		{
-			string messageType = Encoding.UTF8.GetString((byte[])ea.BasicProperties.Headers["MessageType"]);
-			string body = Encoding.UTF8.GetString(ea.Body.ToArray());
+			Supplier newSupplier = new Supplier()
+			{
+				SupplierId = evt.Guid,
+				Email = evt.Email,
+				Name = evt.Meta.ContainsKey("company") ? evt.Meta["company"].ToString() : "UNKNOWN"
+			};
 
-			return _callback.HandleMessageAsync(messageType, body);
+			_supplierRepository.Save(newSupplier);
+
+			return Task.CompletedTask;
 		}
 	}
 }

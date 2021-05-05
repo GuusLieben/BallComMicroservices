@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace InventoryInfrastructure.RabbitMQ.Interfaces
 {
-    public interface IMessageHandler
-    {
-        void Start(IMessageHandlerCallback callback);
-        void Stop();
-    }
+	public interface IMessageHandler
+	{
+		Task<bool> HandleMessageAsync(string messageType, string message);
+	}
 }

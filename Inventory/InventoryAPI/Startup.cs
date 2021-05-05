@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InventoryAPI.Setup
+namespace InventoryAPI
 {
 	public class Startup
 	{
@@ -45,7 +45,6 @@ namespace InventoryAPI.Setup
 			services.AddScoped<ISupplierRepository, EFSupplierRepository>();
 
 			services.UseRabbitMQMessageHandler(Configuration);
-			services.AddHostedService<RabbitMQMessageManager>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,7 +3,7 @@ using InventoryInfrastructure.RabbitMQ.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InventoryAPI.Setup
+namespace InventoryInfrastructure.RabbitMQ
 {
 	public static class RabbitMQConfiguration
 	{
@@ -16,12 +16,14 @@ namespace InventoryAPI.Setup
 
 		public static void UseRabbitMQMessageHandler(this IServiceCollection services, IConfiguration config)
 		{
-			GetRabbitMQSettings(config, "RabbitMQHandler");
-			services.AddTransient<IMessageHandler>(_ => new RabbitMQMessageHandler(
-				_host, _port, _username, _password, _exchange, _queue));
+			ReadRabbitMQConfiguration(config, "RabbitMQHandler");
+
+			// Register handler so it can be injected into manager
+			services.AddTransient<IMessageListener>(_ => new RabbitMQMessageListener(_host, _port, _username, _password, _exchange, _queue));
+			services.AddHostedService<RabbitMQMessageHandler>();
 		}
 
-		private static void GetRabbitMQSettings(IConfiguration config, string sectionName)
+		private static void ReadRabbitMQConfiguration(IConfiguration config, string sectionName)
 		{
 			IConfigurationSection section = config.GetSection(sectionName);
 

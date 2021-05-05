@@ -8,10 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthenticationFilter extends ZuulFilter {
 
-    private final JwtTokenUtil util;
-
-    public AuthenticationFilter(JwtTokenUtil util) {this.util = util;}
-
     @Override
     public boolean shouldFilter() {
         return true;
@@ -20,13 +16,7 @@ public class AuthenticationFilter extends ZuulFilter {
     @Override
     public Object run() {
         RequestContext context = RequestContext.getCurrentContext();
-        String token = context.getRequest().getHeader("X-Token");
-
-        String email = util.getEmailFromToken(token);
-        context.setResponseBody(email);
-
-        if (context.getRequest().getRequestURI().matches("/shipments/[0-9]+"))
-            context.setResponseBody("You are not permitted to view shipment details");
+        // TODO: Verify through Authentication service
         return null;
     }
 

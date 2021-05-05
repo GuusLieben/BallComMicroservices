@@ -5,4 +5,4 @@ zuul:
       url: http://localhost:8082/api/shipments
     auth:
       path: /auth/**
-      url: http://localhost:8081/api/users
+      url: http://localhost:8081/api/auth

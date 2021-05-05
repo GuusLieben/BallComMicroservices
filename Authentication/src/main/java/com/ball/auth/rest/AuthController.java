@@ -27,7 +27,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("api/")
+@RequestMapping("api/auth/")
 public class AuthController {
 
     private final Hasher hasher;
@@ -42,7 +42,7 @@ public class AuthController {
         this.tokenUtil = tokenUtil;
     }
 
-    @RequestMapping(value = "/users", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/user", method = RequestMethod.PATCH)
     public Object processShipment(@RequestBody UserPatchModel patchModel) {
         Optional<User> lookup = this.userRepository.findByEmailEquals(patchModel.getEmail());
         if (lookup.isPresent()) {
@@ -61,7 +61,7 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Object createUser(@RequestBody UserCreateModel user) {
         Optional<User> lookup = this.userRepository.findByEmailEquals(user.getEmail());
         if (lookup.isPresent()) {

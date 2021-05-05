@@ -6,7 +6,7 @@ plugins {
 
 group = 'org.dockbox'
 version = '2.0.0-alpha'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 configurations {
     compileOnly {

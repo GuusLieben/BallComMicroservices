@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace InventoryInfrastructure.RabbitMQ
 {
-	public class RabbitMQMessageHandler : IMessageHandler, IHostedService
+	public class RabbitMQMessageManager : IMessageHandler, IHostedService
 	{
 		private readonly IMessageListener _messageListener;
 		private readonly ISupplierRepository _supplierRepository;
 		private readonly IServiceScope _scope;
 
-		public RabbitMQMessageHandler(IServiceScopeFactory scopeFactory)
+		public RabbitMQMessageManager(IServiceScopeFactory scopeFactory)
 		{
 			_scope = scopeFactory.CreateScope();
 			_messageListener = _scope.ServiceProvider.GetRequiredService<IMessageListener>();

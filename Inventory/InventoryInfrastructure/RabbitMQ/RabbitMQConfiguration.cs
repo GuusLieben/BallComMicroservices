@@ -20,7 +20,7 @@ namespace InventoryInfrastructure.RabbitMQ
 
 			// Register handler so it can be injected into manager
 			services.AddTransient<IMessageListener>(_ => new RabbitMQMessageListener(_host, _port, _username, _password, _exchange, _queue));
-			services.AddHostedService<RabbitMQMessageHandler>();
+			services.AddHostedService<RabbitMQMessageManager>();
 		}
 
 		private static void ReadRabbitMQConfiguration(IConfiguration config, string sectionName)

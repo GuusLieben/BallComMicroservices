@@ -5,10 +5,10 @@ namespace PaymentDomain.Services
 {
     public interface IPaymentRepository
     {
-        public void Save(Payment payment);
-        public void Update(Payment payment);
-        public void Delete(Payment payment);
-        public IEnumerable<Payment> Get();
-        public Payment Get(Guid paymentId);
+        void Save(Payment payment);
+        void Update(Payment payment);
+        void Delete(Payment payment);
+        IEnumerable<Payment> Get();
+        Payment Get(Guid paymentId);
     }
 }

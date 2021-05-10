@@ -26,7 +26,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
-    runtimeOnly 'mysql:mysql-connector-java'
 
     compileOnly 'org.projectlombok:lombok'
 

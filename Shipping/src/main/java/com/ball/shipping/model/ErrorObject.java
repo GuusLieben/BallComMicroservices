@@ -15,6 +15,10 @@ public class ErrorObject {
     private String path;
     private String[] queries;
 
+    public ErrorObject(int status, String error, String message) {
+        this(status, error, message, null);
+    }
+
     public ErrorObject(int status, String error, String message, HttpServletRequest request) {
         this.status = status;
         this.error = error;

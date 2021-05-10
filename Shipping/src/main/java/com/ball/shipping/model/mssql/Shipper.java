@@ -13,18 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
 @Table(name = "shippers")
 @JsonInclude(Include.NON_DEFAULT)
-@Setter
 public class Shipper implements Serializable {
 
     @Id

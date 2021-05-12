@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "ball.rabbitmq.exchange",
+      "type": "java.lang.String",
+      "description": "Global exchange for Ball.com services."
+    },
+    {
+      "name": "ball.rabbitmq.queue",
+      "type": "java.lang.String",
+      "description": "Service specific queue for the Shipment service."
+    },
+    {
+      "name": "ball.rabbitmq.header.registered",
+      "type": "java.lang.String",
+      "description": "Message type for registered shipments."
+    },
+    {
+      "name": "ball.rabbitmq.header.received",
+      "type": "java.lang.String",
+      "description": "Message type for received shipments."
+    },
+    {
+      "name": "ball.rabbitmq.header.shipped",
+      "type": "java.lang.String",
+      "description": "Message type for shipped shipments."
+    },
+    {
+      "name": "ball.rabbitmq.header.delivered",
+      "type": "java.lang.String",
+      "description": "Message type for delivered shipments."
+    }
+  ] }

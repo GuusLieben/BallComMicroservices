@@ -39,3 +39,8 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+*/.gradle
+*/gradle
+**/.mvn
+Gateway/mvnw
+*.cmd

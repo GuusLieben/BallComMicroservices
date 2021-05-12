@@ -1,8 +1,19 @@
 zuul:
   routes:
-    shipments:
-      path: /shipments/**
-      url: http://localhost:8082/api/shipments
     auth:
       path: /auth/**
       url: http://localhost:8081/api/auth
+gateway:
+  header:
+    token: X-token
+    payload: X-token-payload
+  target:
+    path: permit
+    query: target
+  filters:
+    -
+      path: /auth/**
+      roles:
+        - EMPLOYEE
+        - CUSTOMER
+        - SUPPLIER

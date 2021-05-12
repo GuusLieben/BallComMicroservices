@@ -4,7 +4,10 @@ import com.ball.auth.amqp.RabbitMQSender;
 import com.ball.auth.jwt.JwtTokenUtil;
 import com.ball.auth.model.ErrorObject;
 import com.ball.auth.model.User;
+import com.ball.auth.model.UserRole;
+import com.ball.auth.model.jwt.UserJwtModel;
 import com.ball.auth.model.rest.LoginModel;
+import com.ball.auth.model.rest.PermitBody;
 import com.ball.auth.model.rest.TokenValidationModel;
 import com.ball.auth.model.rest.UserCreateModel;
 import com.ball.auth.model.rest.UserPatchModel;
@@ -16,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
@@ -103,9 +109,17 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(value = "/payload", method = RequestMethod.POST)
-    public Object getPayload(@RequestHeader("X-token") String token) {
-        return this.tokenUtil.getRawPayload(token);
+    @RequestMapping(value = "/permit", method = RequestMethod.GET)
+    public PermitBody isPermittedRequest(@RequestHeader("X-token") String token, @RequestParam("target") long expected) {
+        if (this.tokenUtil.isTokenExpired(token)) return PermitBody.deny();
+        UserJwtModel userPayload = this.tokenUtil.getUserPayload(token);
+        EnumSet<UserRole> permittedRoles = UserRole.getStatusFlags(expected);
+        if (permittedRoles.contains(userPayload.getRole())) {
+            Map<String, Object> payload = this.tokenUtil.getRawPayload(token);
+            return new PermitBody(true, payload);
+        } else {
+            return PermitBody.deny();
+        }
     }
 
 }

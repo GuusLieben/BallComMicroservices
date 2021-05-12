@@ -1,7 +1,5 @@
 package com.ball.shipping.amqp;
 
-import com.ball.shipping.model.amqp.Event;
-
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -17,8 +15,9 @@ public class RabbitMQListener {
             exchange = @Exchange("${ball.rabbitmq.exchange}"),
             key = "${ball.rabbitmq.queue}"
     ))
-    public void whenShipmentRegistered(Message message, Event event) {
+    public void whenShipmentRegistered(Message message, String body) {
         Object messageType = message.getMessageProperties().getHeader("MessageType");
-        System.out.println("Received event: " + messageType + " (" + event + ")");
+        ListenableEvent event = ListenableEvent.lookup(String.valueOf(messageType));
+        if (event != null) event.handle(body);
     }
 }

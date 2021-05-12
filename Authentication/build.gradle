@@ -25,6 +25,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 
+    implementation 'at.favre.lib:bcrypt:0.9.0'
+    compile "io.jsonwebtoken:jjwt:0.9.1"
+    compile 'javax.xml.bind:jaxb-api:2.1'
+
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 
     compileOnly 'org.projectlombok:lombok'

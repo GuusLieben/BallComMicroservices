@@ -1,9 +1,39 @@
-server:
-  port: 9090
 zuul:
   routes:
-    foos:
+    auth:
+      path: /auth/**
+      url: http://localhost:8081/api/auth
+    shipment:
       path: /shipments/**
-      url: http://localhost:8080/api/shipments
-jwt:
-  secret: ballComSuperSecretKey
+      url: http://localhost:8082/api/shipments
+    shop:
+      path: /shop/**
+      url: http://localhost:8083/api/shop
+    order:
+      path: /order/**
+      url: http://localhost:8084/api/order
+    payment:
+      path: /payment/**
+      url: http://localhost:8085/api/payment
+    inventory:
+      path: /inventory/**
+      url: http://localhost:8086/api/inventory
+gateway:
+  header:
+    token: X-token
+    payload: X-token-payload
+  target:
+    path: permit
+    query: target
+  filters:
+    -
+      path: /auth/**
+      roles:
+        - EMPLOYEE
+        - CUSTOMER
+        - SUPPLIER
+    -
+      path: /shipments/**
+      roles:
+        - EMPLOYEE
+        - SUPPLIER

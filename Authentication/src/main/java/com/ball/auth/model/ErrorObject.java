@@ -1,4 +1,4 @@
-package com.ball.shipping.model;
+package com.ball.auth.model;
 
 import org.springframework.web.servlet.HandlerMapping;
 

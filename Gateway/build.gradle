@@ -33,8 +33,7 @@ dependencyManagement {
 
 dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-netflix-zuul")
-    compile("io.jsonwebtoken:jjwt:0.9.1")
-    compile 'javax.xml.bind:jaxb-api:2.1'
+    compileOnly 'org.projectlombok:lombok'
 }
 
 

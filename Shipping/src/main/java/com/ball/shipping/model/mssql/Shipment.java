@@ -37,7 +37,7 @@ public class Shipment implements Serializable {
     private short houseNumber;
 
     @Column(nullable = true)
-    private char addition;
+    private String addition;
     private String postalCode;
 
     private double weightInKg;

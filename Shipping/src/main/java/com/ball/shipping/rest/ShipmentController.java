@@ -7,7 +7,6 @@ import com.ball.shipping.model.mssql.Shipment;
 import com.ball.shipping.model.mssql.Shipper;
 import com.ball.shipping.model.rest.ShipmentUpdate;
 import com.ball.shipping.repository.ShipmentRepository;
-import com.ball.shipping.repository.ShipperRepository;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,20 +24,18 @@ import java.util.stream.StreamSupport;
 @RequestMapping("api/")
 public class ShipmentController {
 
-    private final ShipmentRepository shipmentRepository;
-    private final ShipperRepository shipperRepository;
+    private final ShipmentRepository shipments;
     private final RabbitMQSender sender;
 
-    public ShipmentController(ShipmentRepository shipmentRepository, ShipperRepository shipperRepository, RabbitMQSender sender) {
-        this.shipmentRepository = shipmentRepository;
-        this.shipperRepository = shipperRepository;
+    public ShipmentController(ShipmentRepository shipments, RabbitMQSender sender) {
+        this.shipments = shipments;
         this.sender = sender;
     }
 
     @RequestMapping(value = "/shipments/{id}", method = RequestMethod.PATCH)
     public Object processShipment(@PathVariable("id") long id, @RequestBody ShipmentUpdate update) {
         update.setShipmentId(id);
-        Optional<Shipment> lookup = this.shipmentRepository.findById(id);
+        Optional<Shipment> lookup = this.shipments.findById(id);
         if (lookup.isPresent()) {
             Shipment shipment = lookup.get();
             if (update.getState() == ShipmentState.REGISTERED) {
@@ -46,7 +43,7 @@ public class ShipmentController {
             }
             else {
                 shipment.setState(update.getState());
-                Shipment savedShipment = this.shipmentRepository.save(shipment);
+                Shipment savedShipment = this.shipments.save(shipment);
                 savedShipment.getState().perform(this.sender, savedShipment);
                 savedShipment.getShipper().setShipment(null);
                 return savedShipment;
@@ -58,7 +55,7 @@ public class ShipmentController {
 
     @RequestMapping("/shipments/{id}")
     public Object getShipment(@PathVariable("id") long id) {
-        Optional<Shipment> lookup = this.shipmentRepository.findById(id);
+        Optional<Shipment> lookup = this.shipments.findById(id);
         if (lookup.isPresent()) {
             Shipment shipment = lookup.get();
             shipment.getShipper().setShipment(null);
@@ -72,7 +69,7 @@ public class ShipmentController {
 
     @RequestMapping("/shipments")
     public Object getAllShipments() {
-        return StreamSupport.stream(this.shipmentRepository.findAll().spliterator(), false)
+        return StreamSupport.stream(this.shipments.findAll().spliterator(), false)
                 .peek(shipment -> {
                     Shipper shipper = shipment.getShipper();
                     Shipper wrapper = new Shipper();

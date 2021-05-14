@@ -1,7 +1,7 @@
 package com.ball.gateway.config;
 
 public enum Role {
-    CUSTOMER(1<<0), SUPPLIER(1<<1), EMPLOYEE(1<<2);
+    CUSTOMER(1<<0), SUPPLIER(1<<1), EMPLOYEE(1<<2), SYSTEM(1<<4);
 
     private final int i;
 

@@ -130,7 +130,7 @@ public class AuthenticationFilter extends ZuulFilter {
 
     private void reject(RequestContext ctx) {
         ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
-        ctx.setResponseBody("not permitted");
+        ctx.setResponseBody("{\n\t\"error\": \"You do not have permission to access this resource\"}");
         ctx.setSendZuulResponse(false);
     }
 
@@ -138,7 +138,7 @@ public class AuthenticationFilter extends ZuulFilter {
         try {
             return this.exchange(uri, AuthPermitResponse.class, token, new HashMap<>());
         }
-        catch (HttpClientErrorException | UnsupportedEncodingException e) {
+        catch (Throwable t) {
             return null;
         }
     }

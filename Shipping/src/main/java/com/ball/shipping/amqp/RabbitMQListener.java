@@ -19,7 +19,7 @@ public class RabbitMQListener {
             exchange = @Exchange("${ball.rabbitmq.exchange}"),
             key = "${ball.rabbitmq.queue}"
     ))
-    public void whenShipmentRegistered(Message message, String body) {
+    public void when(Message message, String body) {
         Object messageType = message.getMessageProperties().getHeader("MessageType");
         ListenableEvent event = ListenableEvent.lookup(String.valueOf(messageType));
         if (event != null) event.handle(body, this.handler);

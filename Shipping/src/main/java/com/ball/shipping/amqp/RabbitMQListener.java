@@ -5,19 +5,23 @@ import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RabbitMQListener {
 
+    @Autowired
+    private EventHandler handler;
+
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "${ball.rabbitmq.queue}", durable = "false"),
+            value = @Queue(value = "${ball.rabbitmq.queue}", durable = "true"),
             exchange = @Exchange("${ball.rabbitmq.exchange}"),
             key = "${ball.rabbitmq.queue}"
     ))
     public void whenShipmentRegistered(Message message, String body) {
         Object messageType = message.getMessageProperties().getHeader("MessageType");
         ListenableEvent event = ListenableEvent.lookup(String.valueOf(messageType));
-        if (event != null) event.handle(body);
+        if (event != null) event.handle(body, this.handler);
     }
 }

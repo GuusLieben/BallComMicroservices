@@ -1,10 +1,10 @@
 package com.ball.shipping.amqp;
 
-import com.ball.shipping.model.amqp.Event;
-import com.ball.shipping.model.amqp.ShipmentDeliveredEvent;
-import com.ball.shipping.model.amqp.ShipmentReceivedEvent;
-import com.ball.shipping.model.amqp.ShipmentRegisteredEvent;
-import com.ball.shipping.model.amqp.ShipmentShippedEvent;
+import com.ball.shipping.model.amqp.shipment.ShipmentEvent;
+import com.ball.shipping.model.amqp.shipment.ShipmentDeliveredEvent;
+import com.ball.shipping.model.amqp.shipment.ShipmentReceivedEvent;
+import com.ball.shipping.model.amqp.shipment.ShipmentRegisteredEvent;
+import com.ball.shipping.model.amqp.shipment.ShipmentShippedEvent;
 import com.ball.shipping.model.mssql.Shipment;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -50,7 +50,7 @@ public class RabbitMQSender {
         this.broadcast(new ShipmentShippedEvent(shipment), this.shippedHeader);
     }
 
-    private void broadcast(Event event, String messageType) {
+    private void broadcast(ShipmentEvent event, String messageType) {
         this.template.convertAndSend(this.exchangeKey, this.queueKey, event, m -> {
             m.getMessageProperties().setHeader("MessageType", messageType);
             return m;

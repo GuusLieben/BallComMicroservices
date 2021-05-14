@@ -1,17 +1,18 @@
 package com.ball.shipping.amqp;
 
 import com.ball.shipping.model.amqp.Event;
-import com.ball.shipping.model.amqp.ShipmentRegisteredEvent;
+import com.ball.shipping.model.amqp.order.OrderCreatedEvent;
+import com.ball.shipping.model.amqp.shipment.ShipmentRegisteredEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public enum ListenableEvent {
-    SHIPMENT_REGISERED("ShipmentRegistered", ShipmentRegisteredEvent.class, EventHandler::handle);
+    SHIPMENT_REGISTERED("ShipmentRegistered", ShipmentRegisteredEvent.class, EventHandler::handle),
+    ORDER_CREATED("OrderCreated", OrderCreatedEvent.class, EventHandler::handle);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final EventHandler HANDLER = new EventHandler();
     private final String header;
     private final Class<? extends Event> eventType;
     private final BiConsumer<EventHandler, ? extends Event> action;
@@ -35,11 +36,11 @@ public enum ListenableEvent {
         return null;
     }
 
-    public void handle(String body) {
+    public void handle(String body, EventHandler handler) {
         try {
             Event event = MAPPER.readValue(body, this.eventType);
             //noinspection unchecked
-            ((BiConsumer<EventHandler, Event>) this.action).accept(HANDLER, event);
+            ((BiConsumer<EventHandler, Event>) this.action).accept(handler, event);
         } catch (Throwable t) {
             System.out.println("Could not handle " + body);
         }

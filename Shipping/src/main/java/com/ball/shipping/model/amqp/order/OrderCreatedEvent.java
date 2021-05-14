@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class OrderRegisteredEvent implements Event {
+public class OrderCreatedEvent implements Event {
 
     private String firstName;
     private String lastName;

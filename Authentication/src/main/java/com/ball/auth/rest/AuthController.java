@@ -13,6 +13,9 @@ import com.ball.auth.model.rest.UserCreateModel;
 import com.ball.auth.model.rest.UserPatchModel;
 import com.ball.auth.model.rest.VerifiedModel;
 import com.ball.auth.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -40,16 +45,32 @@ public class AuthController {
     private final UserRepository userRepository;
     private final RabbitMQSender sender;
     private final JwtTokenUtil tokenUtil;
+    private final ObjectMapper mapper;
 
     public AuthController(Hasher hasher, UserRepository userRepository, RabbitMQSender sender, JwtTokenUtil tokenUtil) {
         this.hasher = hasher;
         this.userRepository = userRepository;
         this.sender = sender;
         this.tokenUtil = tokenUtil;
+        this.mapper = new ObjectMapper();
     }
 
+    // If the payload is absent the user is not verified and can therefore be rejected immediately
     @RequestMapping(value = "/user", method = RequestMethod.PATCH)
-    public Object processShipment(@RequestBody UserPatchModel patchModel) {
+    public Object processShipment(@RequestBody UserPatchModel patchModel, @RequestHeader("X-Token-Payload") String payload) {
+        Map<String, Object> payloadMap = new HashMap<>();
+        if (payload != null) {
+            payloadMap = this.extract(payload);
+        }
+
+        if (payloadMap.isEmpty()) return new ErrorObject(403, "Unauthorized", "You are not logged in");
+
+        UserRole role = UserRole.valueOf(String.valueOf(payloadMap.get("role")).toUpperCase(Locale.ROOT));
+        String email = (String) payloadMap.getOrDefault("email", null);
+        // Customers and suppliers can only modify their own user data, employees are allowed to edit anyone
+        if (!patchModel.getEmail().equals(email) && !UserRole.SYSTEM.equals(role))
+            return new ErrorObject(403, "Unauthorized", "You are not allowed to patch this user");
+
         Optional<User> lookup = this.userRepository.findByEmailEquals(patchModel.getEmail());
         if (lookup.isPresent()) {
             User user = lookup.get();
@@ -119,6 +140,15 @@ public class AuthController {
             return new PermitBody(true, payload);
         } else {
             return PermitBody.deny();
+        }
+    }
+
+    private Map<String, Object> extract(String payload) {
+        try {
+            return this.mapper.readValue(payload, new TypeReference<HashMap<String, Object>>() {
+            });
+        } catch (JsonProcessingException e) {
+            return new HashMap<>();
         }
     }
 

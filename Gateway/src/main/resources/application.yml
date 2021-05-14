@@ -16,8 +16,8 @@ zuul:
       path: /payment/**
       url: http://localhost:8085/api/payment
     inventory:
-      path: /inventory/**
-      url: http://localhost:8086/api/inventory
+      path: /product/**
+      url: http://localhost:8086/api/product
 gateway:
   header:
     token: X-token
@@ -26,14 +26,57 @@ gateway:
     path: permit
     query: target
   filters:
+    # AUTHENTICATION Service
     -
       path: /auth/**
       roles:
         - EMPLOYEE
         - CUSTOMER
         - SUPPLIER
+    # SHIPMENT Service
     -
       path: /shipments/**
       roles:
         - EMPLOYEE
+    # ORDER Service
+    -
+      path: /order/**
+      method: POST
+      roles:
+        - EMPLOYEE
+    -
+      path: /order/**
+      roles:
+        - EMPLOYEE
+        - CUSTOMER
+    -
+      path: /order/**
+      method: UPDATE
+      roles:
+        - EMPLOYEE
+    # INVENTORY Service
+    -
+      path: /product/internal
+      method: POST
+      roles:
+        - EMPLOYEE
+    -
+      path: /product/supplier
+      method: POST
+      roles:
         - SUPPLIER
+    -
+      path: /product/internal/stock/**
+      method: PUT
+      roles:
+        - EMPLOYEE
+    -
+      path: /product/supplier/stock/**
+      method: PUT
+      roles:
+        - SUPPLIER
+    # PAYMENT Service
+    -
+      path: /api/payment/**
+      roles:
+        - EMPLOYEE

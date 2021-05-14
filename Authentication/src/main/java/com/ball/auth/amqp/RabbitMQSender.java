@@ -3,6 +3,8 @@ package com.ball.auth.amqp;
 import com.ball.auth.model.User;
 import com.ball.auth.model.UserRole;
 import com.ball.auth.model.amqp.AuthEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQSender {
 
-    private final RabbitTemplate template;
     @Value("${ball.rabbitmq.exchange}")
     private String exchangeKey;
     @Value("${ball.rabbitmq.queue}")
@@ -31,8 +32,12 @@ public class RabbitMQSender {
     @Value("${ball.rabbitmq.header.deleted}")
     private String deletedHeader;
 
+    private final RabbitTemplate template;
+    private final ObjectMapper mapper;
+
     public RabbitMQSender(RabbitTemplate template) {
         this.template = template;
+        this.mapper = new ObjectMapper();
     }
 
     public void userCreated(User user) {
@@ -61,9 +66,15 @@ public class RabbitMQSender {
     }
 
     private void broadcast(AuthEvent event, String messageType) {
-        this.template.convertAndSend(this.exchangeKey, this.queueKey, event, m -> {
-            m.getMessageProperties().setHeader("MessageType", messageType);
-            return m;
-        });
+        try {
+            String eventJson = this.mapper.writeValueAsString(event);
+            this.template.convertAndSend(this.exchangeKey, this.queueKey, eventJson, m -> {
+                m.getMessageProperties().setHeader("MessageType", messageType);
+                return m;
+            });
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

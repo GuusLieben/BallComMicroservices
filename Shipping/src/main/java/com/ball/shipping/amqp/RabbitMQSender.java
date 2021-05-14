@@ -6,6 +6,8 @@ import com.ball.shipping.model.amqp.shipment.ShipmentReceivedEvent;
 import com.ball.shipping.model.amqp.shipment.ShipmentRegisteredEvent;
 import com.ball.shipping.model.amqp.shipment.ShipmentShippedEvent;
 import com.ball.shipping.model.mssql.Shipment;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,9 +31,11 @@ public class RabbitMQSender {
     private String deliveredHeader;
 
     private final RabbitTemplate template;
+    private final ObjectMapper mapper;
 
     public RabbitMQSender(RabbitTemplate template) {
         this.template = template;
+        this.mapper = new ObjectMapper();
     }
 
     public void shipmentDelivered(Shipment shipment) {
@@ -51,9 +55,15 @@ public class RabbitMQSender {
     }
 
     private void broadcast(ShipmentEvent event, String messageType) {
-        this.template.convertAndSend(this.exchangeKey, this.queueKey, event, m -> {
-            m.getMessageProperties().setHeader("MessageType", messageType);
-            return m;
-        });
+        try {
+            String eventJson = this.mapper.writeValueAsString(event);
+            this.template.convertAndSend(this.exchangeKey, this.queueKey, eventJson, m -> {
+                m.getMessageProperties().setHeader("MessageType", messageType);
+                return m;
+            });
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -27,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -54,9 +55,13 @@ public class AuthenticationFilter extends ZuulFilter {
     public Object run() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
         String request = ctx.getRequest().getRequestURI();
+        String method = ctx.getRequest().getMethod();
+
         RoleFilter active = null;
         for (RoleFilter filter : this.configuration.getFilters()) {
-            if (wildcardMatch(request, filter.getPath())) {
+            if (wildcardMatch(request, filter.getPath())
+                    && method.toUpperCase(Locale.ROOT).equals(filter.getMethod().toUpperCase(Locale.ROOT))
+            ) {
                 active = filter;
                 break;
             }
@@ -88,6 +93,9 @@ public class AuthenticationFilter extends ZuulFilter {
     }
 
     static boolean wildcardMatch(String str, String pattern) {
+        str = wrap(str);
+        pattern = wrap(pattern);
+
         int n = str.length();
         int m = pattern.length();
 
@@ -111,6 +119,12 @@ public class AuthenticationFilter extends ZuulFilter {
         }
 
         return lookup[n][m];
+    }
+
+    private static String wrap(String target) {
+        if (!target.startsWith("/")) target = '/' + target;
+        if (!target.endsWith("/")) target += '/';
+        return target;
     }
 
     private void reject(RequestContext ctx) {

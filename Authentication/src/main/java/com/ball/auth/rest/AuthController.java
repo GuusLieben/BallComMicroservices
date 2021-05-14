@@ -79,9 +79,14 @@ public class AuthController {
                 if (JwtTokenUtil.SKIP_KEYS.contains(entry.getKey())) {
                     return new ErrorObject(403, "Illegal key", "Metadata key '" + entry.getKey() + "' is reserved and cannot be used");
                 }
-                user.getMeta().put(entry.getKey(), entry.getValue());
+                if (entry.getValue() == null) user.getMeta().remove(entry.getKey());
+                else user.getMeta().put(entry.getKey(), entry.getValue());
             }
-            return this.userRepository.save(user);
+            
+            User saved = this.userRepository.save(user);
+            saved.setPasswordHash(null);
+            saved.setGuid(null);
+            return saved;
         }
         else {
             return new ErrorObject(404, "Not found", "User with email " + patchModel.getEmail() + " does not exist");

@@ -1,6 +1,6 @@
 package com.ball.auth.amqp;
 
-import com.ball.auth.model.amqp.Event;
+import com.ball.auth.model.amqp.AuthEvent;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -17,7 +17,7 @@ public class RabbitMQListener {
             exchange = @Exchange("${ball.rabbitmq.exchange}"),
             key = "${ball.rabbitmq.queue}"
     ))
-    public void whenShipmentRegistered(Message message, Event event) {
+    public void whenShipmentRegistered(Message message, AuthEvent event) {
         Object messageType = message.getMessageProperties().getHeader("MessageType");
         System.out.println("Received event: " + messageType + " (" + event + ")");
     }

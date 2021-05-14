@@ -2,7 +2,7 @@ package com.ball.auth.amqp;
 
 import com.ball.auth.model.User;
 import com.ball.auth.model.UserRole;
-import com.ball.auth.model.amqp.Event;
+import com.ball.auth.model.amqp.AuthEvent;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,15 +36,15 @@ public class RabbitMQSender {
     }
 
     public void userCreated(User user) {
-        this.broadcast(new Event.Created(user), this.getRoleHeader(user.getRole()) + this.addedHeader);
+        this.broadcast(new AuthEvent.Created(user), this.getRoleHeader(user.getRole()) + this.addedHeader);
     }
 
     public void userUpdated(User user) {
-        this.broadcast(new Event.Updated(user), this.getRoleHeader(user.getRole()) + this.updatedHeader);
+        this.broadcast(new AuthEvent.Updated(user), this.getRoleHeader(user.getRole()) + this.updatedHeader);
     }
 
     public void userDeleted(User user) {
-        this.broadcast(new Event.Deleted(user), this.getRoleHeader(user.getRole()) + this.deletedHeader);
+        this.broadcast(new AuthEvent.Deleted(user), this.getRoleHeader(user.getRole()) + this.deletedHeader);
     }
 
     private String getRoleHeader(UserRole role) {
@@ -60,7 +60,7 @@ public class RabbitMQSender {
         }
     }
 
-    private void broadcast(Event event, String messageType) {
+    private void broadcast(AuthEvent event, String messageType) {
         this.template.convertAndSend(this.exchangeKey, this.queueKey, event, m -> {
             m.getMessageProperties().setHeader("MessageType", messageType);
             return m;

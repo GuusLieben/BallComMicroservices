@@ -29,7 +29,6 @@ gateway:
     # AUTHENTICATION Service
     -
       path: /auth/**
-      method: ALL
       roles:
         - EMPLOYEE
         - CUSTOMER

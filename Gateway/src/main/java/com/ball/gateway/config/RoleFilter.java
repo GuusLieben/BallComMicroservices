@@ -6,7 +6,7 @@ import lombok.Data;
 public class RoleFilter {
 
     private String path;
-    private String method = "GET";
+    private String method = "ALL";
     private Role[] roles;
 
 }

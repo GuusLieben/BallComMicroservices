@@ -20,8 +20,8 @@ zuul:
       url: http://localhost:8086/api/product
 gateway:
   header:
-    token: X-token
-    payload: X-token-payload
+    token: X-Token
+    payload: X-Token-Payload
   target:
     path: permit
     query: target
@@ -29,6 +29,7 @@ gateway:
     # AUTHENTICATION Service
     -
       path: /auth/**
+      method: ALL
       roles:
         - EMPLOYEE
         - CUSTOMER

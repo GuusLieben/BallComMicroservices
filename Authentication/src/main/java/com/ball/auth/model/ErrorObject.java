@@ -1,5 +1,6 @@
 package com.ball.auth.model;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,10 @@ public class ErrorObject {
     private final String message;
     private String path;
     private String[] queries;
+
+    public ErrorObject(HttpStatus status, String message) {
+        this(status.value(), status.getReasonPhrase(), message);
+    }
 
     public ErrorObject(int status, String error, String message) {
         this(status, error, message, null);

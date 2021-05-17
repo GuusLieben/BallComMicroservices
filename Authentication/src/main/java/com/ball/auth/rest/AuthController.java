@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -63,13 +64,13 @@ public class AuthController {
             payloadMap = this.extract(payload);
         }
 
-        if (payloadMap.isEmpty()) return new ErrorObject(403, "Unauthorized", "You are not logged in");
+        if (payloadMap.isEmpty()) return new ErrorObject(HttpStatus.UNAUTHORIZED, "You are not logged in");
 
         UserRole role = UserRole.valueOf(String.valueOf(payloadMap.get("role")).toUpperCase(Locale.ROOT));
         String email = (String) payloadMap.getOrDefault("email", null);
         // Customers and suppliers can only modify their own user data, employees are allowed to edit anyone
         if (!patchModel.getEmail().equals(email) && !UserRole.SYSTEM.equals(role))
-            return new ErrorObject(403, "Unauthorized", "You are not allowed to patch this user");
+            return new ErrorObject(HttpStatus.UNAUTHORIZED, "You are not allowed to patch this user");
 
         Optional<User> lookup = this.userRepository.findByEmailEquals(patchModel.getEmail());
         if (lookup.isPresent()) {
@@ -77,12 +78,12 @@ public class AuthController {
 
             for (Entry<String, String> entry : patchModel.getMeta().entrySet()) {
                 if (JwtTokenUtil.SKIP_KEYS.contains(entry.getKey())) {
-                    return new ErrorObject(403, "Illegal key", "Metadata key '" + entry.getKey() + "' is reserved and cannot be used");
+                    return new ErrorObject(HttpStatus.UNAUTHORIZED, "Metadata key '" + entry.getKey() + "' is reserved and cannot be used");
                 }
                 if (entry.getValue() == null) user.getMeta().remove(entry.getKey());
                 else user.getMeta().put(entry.getKey(), entry.getValue());
             }
-            
+
             User saved = this.userRepository.save(user);
             saved.setPasswordHash(null);
             saved.setGuid(null);
@@ -97,7 +98,7 @@ public class AuthController {
     public Object createUser(@RequestBody UserCreateModel user) {
         Optional<User> lookup = this.userRepository.findByEmailEquals(user.getEmail());
         if (lookup.isPresent()) {
-            return new ErrorObject(400, "Already exists", "User with email " + user.getEmail() + " already exists");
+            return new ErrorObject(HttpStatus.BAD_REQUEST, "User with email " + user.getEmail() + " already exists");
         }
         else {
             User temp = new User();
@@ -127,11 +128,11 @@ public class AuthController {
                 return new VerifiedModel(this.tokenUtil.generateToken(user.get()));
             }
             else {
-                return new ErrorObject(403, "Not permitted", "Invalid login credentials");
+                return new ErrorObject(HttpStatus.UNAUTHORIZED, "Invalid login credentials");
             }
         }
         else {
-            return new ErrorObject(403, "Not permitted", "No user with that email exists");
+            return new ErrorObject(HttpStatus.UNAUTHORIZED, "No user with that email exists");
         }
     }
 

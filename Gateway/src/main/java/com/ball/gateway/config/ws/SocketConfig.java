@@ -1,4 +1,4 @@
-package com.ball.gateway.config;
+package com.ball.gateway.config.ws;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Primary;
@@ -11,11 +11,9 @@ import lombok.Data;
 @Data
 @Component
 @Primary
-@ConfigurationProperties(prefix = "gateway")
-public class GatewayConfiguration {
+@ConfigurationProperties(prefix = "gateway.ws")
+public class SocketConfig {
 
-    private Header header;
-    private Target target;
-    private List<RoleFilter> filters;
+    private List<Handler> handlers;
 
 }

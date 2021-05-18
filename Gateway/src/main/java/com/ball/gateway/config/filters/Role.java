@@ -1,4 +1,4 @@
-package com.ball.gateway.config;
+package com.ball.gateway.config.filters;
 
 public enum Role {
     CUSTOMER(1<<0), SUPPLIER(1<<1), EMPLOYEE(1<<2), SYSTEM(1<<4);

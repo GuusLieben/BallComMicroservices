@@ -18,6 +18,9 @@ zuul:
     inventory:
       path: /product/**
       url: http://localhost:8086/api/product
+    support:
+      path: /support/**
+      url: http://localhost:8087
 gateway:
   header:
     token: X-Token
@@ -25,6 +28,11 @@ gateway:
   target:
     path: permit
     query: target
+  ws:
+    handlers:
+      -
+        prefix: support
+        url: http://localhost:8087/chat
   filters:
     # AUTHENTICATION Service
     -

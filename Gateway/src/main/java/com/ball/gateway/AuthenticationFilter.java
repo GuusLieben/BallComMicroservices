@@ -1,8 +1,8 @@
 package com.ball.gateway;
 
-import com.ball.gateway.config.GatewayConfiguration;
-import com.ball.gateway.config.Role;
-import com.ball.gateway.config.RoleFilter;
+import com.ball.gateway.config.filters.GatewayConfiguration;
+import com.ball.gateway.config.filters.Role;
+import com.ball.gateway.config.filters.RoleFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -93,7 +93,7 @@ public class AuthenticationFilter extends ZuulFilter {
         return "ALL".equalsIgnoreCase(expected) || actual.equalsIgnoreCase(expected);
     }
 
-    static boolean wildcardMatch(String str, String pattern) {
+    public static boolean wildcardMatch(String str, String pattern) {
         str = wrap(str);
         pattern = wrap(pattern);
 

@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import javax.annotation.PreDestroy;
 @EnableZuulProxy
 @EnableCircuitBreaker
 @SpringBootApplication
+@EnableWebSocketMessageBroker
 public class BallComGateway {
 
 	public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.ball.gateway.config;
+package com.ball.gateway.config.filters;
 
 import lombok.Data;
 

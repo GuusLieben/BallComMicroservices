@@ -19,10 +19,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,7 +59,7 @@ public class AuthController {
     }
 
     // If the payload is absent the user is not verified and can therefore be rejected immediately
-    @RequestMapping(value = "/user", method = RequestMethod.PATCH)
+    @PatchMapping("/user")
     public Object processShipment(@RequestBody UserPatchModel patchModel, @RequestHeader("X-Token-Payload") String payload) {
         Map<String, Object> payloadMap = new HashMap<>();
         if (payload != null) {
@@ -94,7 +96,7 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @PostMapping("/register")
     public Object createUser(@RequestBody UserCreateModel user) {
         Optional<User> lookup = this.userRepository.findByEmailEquals(user.getEmail());
         if (lookup.isPresent()) {
@@ -111,12 +113,12 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(value = "/verify", method = RequestMethod.POST)
+    @PostMapping("/verify")
     public TokenValidationModel isValidSession(@RequestHeader("X-token") String token) {
         return new TokenValidationModel(token, !this.tokenUtil.isTokenExpired(token));
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @PostMapping("/login")
     public Object login(@RequestBody LoginModel model) {
         Optional<User> user = this.userRepository.findByEmailEquals(model.getEmail());
         if (user.isPresent()) {
@@ -136,7 +138,7 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(value = "/permit", method = RequestMethod.GET)
+    @GetMapping("/permit")
     public PermitBody isPermittedRequest(@RequestHeader("X-token") String token, @RequestParam("target") long expected) {
         if (this.tokenUtil.isTokenExpired(token)) return PermitBody.deny();
         UserJwtModel userPayload = this.tokenUtil.getUserPayload(token);

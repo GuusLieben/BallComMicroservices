@@ -9,10 +9,11 @@ import com.ball.shipping.model.rest.ShipmentUpdate;
 import com.ball.shipping.repository.ShipmentRepository;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class ShipmentController {
         this.sender = sender;
     }
 
-    @RequestMapping(value = "/shipments/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/shipments/{id}")
     public Object processShipment(@PathVariable("id") long id, @RequestBody ShipmentUpdate update) {
         update.setShipmentId(id);
         Optional<Shipment> lookup = this.shipments.findById(id);
@@ -53,7 +54,7 @@ public class ShipmentController {
         }
     }
 
-    @RequestMapping("/shipments/{id}")
+    @GetMapping("/shipments/{id}")
     public Object getShipment(@PathVariable("id") long id) {
         Optional<Shipment> lookup = this.shipments.findById(id);
         if (lookup.isPresent()) {
@@ -67,7 +68,7 @@ public class ShipmentController {
         }
     }
 
-    @RequestMapping("/shipments")
+    @GetMapping("/shipments")
     public Object getAllShipments() {
         return StreamSupport.stream(this.shipments.findAll().spliterator(), false)
                 .peek(shipment -> {

@@ -22,7 +22,8 @@ public class SupportController {
         // - If the message is not anonymous, use the user's real name (instead of an email)
         // - Ensure random name is unique for topic + email (generate new if message type is JOIN)
 
-        if (message.isAnonymous()) {
+        if (message.getMeta().containsKey("anonymous")) {
+            System.out.println("Anon: " + message.getMeta().get("anonymous"));
             message.setSender("Geheime Kabouter");
         }
         return message;

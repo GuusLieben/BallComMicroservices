@@ -47,7 +47,9 @@ function onConnected() {
         JSON.stringify({
             sender: username,
             type: 'JOIN',
-            anonymous: anonymous
+            meta: {
+                anonymous: anonymous
+            }
         })
     )
 
@@ -69,7 +71,9 @@ function send(event) {
             sender: username,
             content: messageInput.value,
             type: 'CHAT',
-            anonymous: anonymous
+            meta: {
+                anonymous: anonymous
+            }
         };
 
         stompClient.send("/app/chat.send/" + topic, {}, JSON.stringify(socketMessage));

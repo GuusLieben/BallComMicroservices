@@ -23,8 +23,12 @@ public class SupportController {
         // - Ensure random name is unique for topic + email (generate new if message type is JOIN)
 
         if (message.getMeta().containsKey("anonymous")) {
-            System.out.println("Anon: " + message.getMeta().get("anonymous"));
-            message.setSender("Geheime Kabouter");
+            if (!((boolean) message.getMeta().get("anonymous"))) {
+                message.getMeta().put("name", message.getSender());
+            } else {
+                message.setSender(null);
+                message.getMeta().put("name", "Anonymous");
+            }
         }
         return message;
     }

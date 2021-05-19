@@ -4,6 +4,6 @@ import nl.avans.domain.models.Product;
 
 public class CustomerAddedListenEvent extends ListenEvent {
     protected CustomerAddedListenEvent(Product product) {
-        super("CustomerAdded", product);
+        super("CustomerAdded");
     }
 }

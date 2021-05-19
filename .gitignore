@@ -42,3 +42,8 @@ msbuild.wrn
 
 # Maven default output folder
 target/
+*/.gradle
+*/gradle
+**/.mvn
+Gateway/mvnw
+*.cmd

@@ -6,6 +6,6 @@ import nl.avans.infrastructure.broker.events.listen.ListenEvent;
 public class ProductDetailsViewedSendEvent extends ListenEvent {
 
     public ProductDetailsViewedSendEvent(Product product) {
-        super("ProductDetailsViewed", product);
+        super("ProductDetailsViewed");
     }
 }

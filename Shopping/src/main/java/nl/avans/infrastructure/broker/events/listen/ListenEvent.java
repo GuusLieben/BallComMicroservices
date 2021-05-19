@@ -2,22 +2,19 @@ package nl.avans.infrastructure.broker.events.listen;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import nl.avans.domain.models.Product;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Getter
-public abstract class ListenEvent implements Serializable {
+@NoArgsConstructor
+public class ListenEvent implements Serializable {
 
     @JsonProperty
     private String name;
 
-    @JsonProperty
-    private Product product;
-
-    protected ListenEvent(String name, Product product) {
+    protected ListenEvent(String name) {
         this.name = name;
-        this.product = product;
     }
 }
 

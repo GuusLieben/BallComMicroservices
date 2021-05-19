@@ -5,7 +5,7 @@ public class ListenEventFactory {
         ListenEvent event = null;
         switch (type) {
             case "CustomerAdded":
-                event = new CustomerAddedListenEvent(listenEvent.getProduct());
+                event = new CustomerAddedListenEvent(null);
                 break;
             case "CustomerUpdated":
                 System.out.println("Customer update");

@@ -1,5 +1,6 @@
 package com.ball.support.amqp;
 
+import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -16,8 +17,7 @@ public class RabbitMQListener {
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "${ball.rabbitmq.queue}", durable = "true"),
-            exchange = @Exchange("${ball.rabbitmq.exchange}"),
-            key = "${ball.rabbitmq.queue}"
+            exchange = @Exchange(value = "${ball.rabbitmq.exchange}", type = ExchangeTypes.FANOUT)
     ))
     public void when(Message message, String body) {
         Object messageType = message.getMessageProperties().getHeader("MessageType");

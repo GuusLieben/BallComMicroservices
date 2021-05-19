@@ -18,6 +18,22 @@ var colors = [
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 
+window.onbeforeunload = function(){
+   if (stompClient) {
+        stompClient.send("/app/chat.send/" + topic,
+                {},
+                JSON.stringify({
+                    sender: username,
+                    type: 'LEAVE',
+                    topic: topic,
+                    meta: {
+                        anonymous: anonymous
+                    }
+                })
+            )
+   }
+}
+
 function connect(event) {
     username = document.querySelector('#name').value.trim();
     topic = document.querySelector('#topic').value.trim();

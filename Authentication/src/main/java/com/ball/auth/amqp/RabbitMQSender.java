@@ -41,15 +41,15 @@ public class RabbitMQSender {
     }
 
     public void userCreated(User user) {
-        this.broadcast(new AuthEvent.Created(user), this.getRoleHeader(user.getRole()) + this.addedHeader);
+        this.broadcast(new AuthEvent(user), this.getRoleHeader(user.getRole()) + this.addedHeader);
     }
 
     public void userUpdated(User user) {
-        this.broadcast(new AuthEvent.Updated(user), this.getRoleHeader(user.getRole()) + this.updatedHeader);
+        this.broadcast(new AuthEvent(user), this.getRoleHeader(user.getRole()) + this.updatedHeader);
     }
 
     public void userDeleted(User user) {
-        this.broadcast(new AuthEvent.Deleted(user), this.getRoleHeader(user.getRole()) + this.deletedHeader);
+        this.broadcast(new AuthEvent(user), this.getRoleHeader(user.getRole()) + this.deletedHeader);
     }
 
     private String getRoleHeader(UserRole role) {

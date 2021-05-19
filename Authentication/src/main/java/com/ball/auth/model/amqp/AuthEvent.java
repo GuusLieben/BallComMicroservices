@@ -10,38 +10,17 @@ import java.util.UUID;
 import lombok.Getter;
 
 @Getter
-public abstract class AuthEvent implements Serializable {
+public class AuthEvent implements Serializable {
 
-    private UUID guid;
-    private Map<String, String> meta;
-    private String email;
-    private UserRole role;
+    private final UUID guid;
+    private final Map<String, String> meta;
+    private final String email;
+    private final UserRole role;
 
-    protected AuthEvent(User user) {
+    public AuthEvent(User user) {
         this.guid = user.getGuid();
         this.meta = user.getMeta();
         this.email = user.getEmail();
         this.role = user.getRole();
-    }
-
-    public static class Created extends AuthEvent {
-
-        public Created(User customer) {
-            super(customer);
-        }
-    }
-
-    public static class Updated extends AuthEvent {
-
-        public Updated(User customer) {
-            super(customer);
-        }
-    }
-
-    public static class Deleted extends AuthEvent {
-
-        public Deleted(User customer) {
-            super(customer);
-        }
     }
 }

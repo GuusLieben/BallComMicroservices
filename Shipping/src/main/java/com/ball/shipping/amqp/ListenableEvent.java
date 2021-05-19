@@ -15,18 +15,17 @@ public enum ListenableEvent {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private final String header;
     private final Class<? extends Event> eventType;
-    private final BiConsumer<EventHandler, ? extends Event> action;
+    private final BiConsumer<EventHandler, ? extends Event>[] actions;
 
-    <T extends Event> ListenableEvent(String header, Class<T> eventType, BiConsumer<EventHandler, T> action) {
+    @SafeVarargs
+    <T extends Event> ListenableEvent(String header, Class<T> eventType, BiConsumer<EventHandler, T>... actions) {
         this.header = header;
         this.eventType = eventType;
-        this.action = action;
+        this.actions = actions;
     }
 
-    <T extends Event> ListenableEvent(String header, Class<T> eventType, Consumer<T> action) {
-        this.header = header;
-        this.eventType = eventType;
-        this.action = (EventHandler handler, T event) -> action.accept(event);
+    <T extends Event> ListenableEvent(String header, Class<T> eventType, Consumer<T> actions) {
+        this(header, eventType,  (EventHandler handler, T event) -> actions.accept(event));
     }
 
     public static ListenableEvent lookup(String header) {
@@ -40,7 +39,9 @@ public enum ListenableEvent {
         try {
             Event event = MAPPER.readValue(body, this.eventType);
             //noinspection unchecked
-            ((BiConsumer<EventHandler, Event>) this.action).accept(handler, event);
+            for (BiConsumer<EventHandler, Event> action : (BiConsumer<EventHandler, Event>[]) this.actions) {
+                action.accept(handler, event);
+            }
         } catch (Throwable t) {
             System.out.println("Could not handle " + body);
         }

@@ -49,7 +49,7 @@ namespace InventoryInfrastructure.RabbitMQ
 					_connection = factory.CreateConnection();
 					_model = _connection.CreateModel();
 
-					_model.ExchangeDeclare(_exchange, "fanout", false, false);
+					_model.ExchangeDeclare(_exchange, "fanout", true, false);
 					_model.QueueDeclare(_queue, durable: true, autoDelete: false, exclusive: false);
 					_model.QueueBind(_queue, _exchange, "");
 

@@ -2,17 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace InventoryInfrastructure
 {
-	public class InventoryDbContext : DbContext
+	public class ReadDbContext : DbContext
 	{
-		public InventoryDbContext(DbContextOptions<InventoryDbContext> options) : base(options) { }
+		public ReadDbContext(DbContextOptions<ReadDbContext> options) : base(options) { }
 
-		public DbSet<Supplier> Supplier { get; set; }
-		public DbSet<Brand> Brand { get; set; }
+		public DbSet<Product> Product { get; set; }
+		public DbSet<ProcessedEvent> ProcessedEvent { get; set; }
 
 		public void MigrateDB()
 		{

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace InventoryDomain.Events
+namespace InventoryServices.Models
 {
-	public class SupplierAdded
+	public class XTokenPayload
 	{
 		public Guid Guid { get; set; }
 		public string Email { get; set; }

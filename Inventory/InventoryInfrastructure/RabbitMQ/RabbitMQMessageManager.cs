@@ -1,6 +1,5 @@
 ﻿using InventoryDomain.Events;
 using InventoryDomain.Models;
-using InventoryDomain.Services;
 using InventoryInfrastructure.RabbitMQ.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,16 +16,13 @@ namespace InventoryInfrastructure.RabbitMQ
 	public class RabbitMQMessageManager : IMessageHandler, IHostedService
 	{
 		private readonly IMessageListener _messageListener;
-		private readonly ISupplierRepository _supplierRepository;
 		private readonly IServiceScope _scope;
 
 		public RabbitMQMessageManager(IServiceScopeFactory scopeFactory)
 		{
 			_scope = scopeFactory.CreateScope();
 			_messageListener = _scope.ServiceProvider.GetRequiredService<IMessageListener>();
-			_supplierRepository = _scope.ServiceProvider.GetRequiredService<ISupplierRepository>();
 		}
-
 
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
@@ -49,9 +45,21 @@ namespace InventoryInfrastructure.RabbitMQ
 				JObject messageObject = MessageSerializer.Deserialize(message);
 				switch (messageType)
 				{
-					case "SupplierAdded":
-						await HandleAsync(messageObject.ToObject<SupplierAdded>());
+					case "ProductCreated":
+						await HandleAsync(messageObject.ToObject<ProductCreated>());
 						break;
+
+					case "StockAdded":
+						await HandleAsync(messageObject.ToObject<StockAdded>());
+						break;
+
+					case "StockRemoved":
+						await HandleAsync(messageObject.ToObject<StockRemoved>());
+						break;
+
+
+
+
 					default:
 						break;
 				}
@@ -64,24 +72,48 @@ namespace InventoryInfrastructure.RabbitMQ
             return true;
         }
 
-		private Task HandleAsync(SupplierAdded evt)
+		private async Task HandleAsync(ProductCreated createdEvent)
 		{
-			Debug.WriteLine("-------------------------------------------");
-			Debug.WriteLine("SupplierId: " + evt.Guid);
-			Debug.WriteLine("Email: " + evt.Email);
-			Debug.WriteLine("Name: " +  evt.Meta["company"]);
-			Debug.WriteLine("-------------------------------------------");
+			ReadDbContext _readDb = _scope.ServiceProvider.GetRequiredService<ReadDbContext>();
 
-			Supplier newSupplier = new Supplier()
-			{
-				SupplierId = evt.Guid,
-				Email = evt.Email,
-				Name = evt.Meta.ContainsKey("company") ? evt.Meta["company"].ToString() : "UNKNOWN"
-			};
+			if (await _readDb.ProcessedEvent.FindAsync(createdEvent.EventId) != null)
+				return;
 
-			_supplierRepository.Save(newSupplier);
+			Product createdProduct = new Product(createdEvent);
+			_readDb.Product.Add(createdProduct);
+			_readDb.ProcessedEvent.Add(new ProcessedEvent() { EventId = createdEvent.EventId });
 
-			return Task.CompletedTask;
+			await _readDb.SaveChangesAsync();
+		}
+
+		private async Task HandleAsync(StockAdded saEvent)
+		{
+			ReadDbContext _readDb = _scope.ServiceProvider.GetRequiredService<ReadDbContext>();
+
+			if (await _readDb.ProcessedEvent.FindAsync(saEvent.EventId) != null)
+				return;
+
+			Product updatedProduct = await _readDb.Product.FindAsync(saEvent.ProductId);
+			updatedProduct.Amount += saEvent.Amount;
+
+			_readDb.ProcessedEvent.Add(new ProcessedEvent() { EventId = saEvent.EventId });
+
+			await _readDb.SaveChangesAsync();
+		}
+
+		private async Task HandleAsync(StockRemoved srEvent)
+		{
+			ReadDbContext _readDb = _scope.ServiceProvider.GetRequiredService<ReadDbContext>();
+
+			if (await _readDb.ProcessedEvent.FindAsync(srEvent.EventId) != null)
+				return;
+
+			Product updatedProduct = await _readDb.Product.FindAsync(srEvent.ProductId);
+			updatedProduct.Amount -= srEvent.Amount;
+
+			_readDb.ProcessedEvent.Add(new ProcessedEvent() { EventId = srEvent.EventId });
+
+			await _readDb.SaveChangesAsync();
 		}
 	}
 }

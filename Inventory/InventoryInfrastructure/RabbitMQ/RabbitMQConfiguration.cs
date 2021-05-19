@@ -23,6 +23,12 @@ namespace InventoryInfrastructure.RabbitMQ
 			services.AddHostedService<RabbitMQMessageManager>();
 		}
 
+		public static void UseRabbitMQMessagePublisher(this IServiceCollection services, IConfiguration config)
+		{
+			ReadRabbitMQConfiguration(config, "RabbitMQPublisher");
+			services.AddTransient<IMessagePublisher>(_ => new RabbitMQMessagePublisher(_host, _username, _password, _exchange, _port));
+		}
+
 		private static void ReadRabbitMQConfiguration(IConfiguration config, string sectionName)
 		{
 			IConfigurationSection section = config.GetSection(sectionName);

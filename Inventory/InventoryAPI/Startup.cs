@@ -1,7 +1,6 @@
-using InventoryDomain.Services;
 using InventoryInfrastructure;
 using InventoryInfrastructure.RabbitMQ;
-using InventoryInfrastructure.Repositories;
+using InventoryServices.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -37,14 +36,20 @@ namespace InventoryAPI
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "InventoryAPI", Version = "v1" });
 			});
 
-			services.AddDbContext<InventoryDbContext>(options =>
+			services.AddDbContext<ReadDbContext>(options =>
 			{
 				options.UseSqlServer(Configuration["Database:Main"], actions => actions.MigrationsAssembly("InventoryInfrastructure"));
 			});
 
-			services.AddScoped<ISupplierRepository, EFSupplierRepository>();
+			services.AddDbContext<WriteDbContext>(options =>
+			{
+				options.UseSqlServer(Configuration["Database:Main"], actions => actions.MigrationsAssembly("InventoryInfrastructure"));
+			});
 
 			services.UseRabbitMQMessageHandler(Configuration);
+			services.UseRabbitMQMessagePublisher(Configuration);
+
+			services.AddScoped<ProductEventReplay>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,7 +73,7 @@ namespace InventoryAPI
 
 			// auto migrate db
 			using IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-			scope.ServiceProvider.GetService<InventoryDbContext>().MigrateDB();
+			scope.ServiceProvider.GetService<ReadDbContext>().MigrateDB();
 		}
 	}
 }

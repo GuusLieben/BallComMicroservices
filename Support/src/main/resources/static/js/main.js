@@ -63,6 +63,7 @@ function onConnected() {
         JSON.stringify({
             sender: username,
             type: 'JOIN',
+            topic: topic,
             meta: {
                 anonymous: anonymous
             }
@@ -78,7 +79,6 @@ function onError(error) {
     connectingElement.style.color = 'red';
 }
 
-
 function send(event) {
     var messageContent = messageInput.value.trim();
 
@@ -87,6 +87,7 @@ function send(event) {
             sender: username,
             content: messageInput.value,
             type: 'CHAT',
+            topic: topic,
             meta: {
                 anonymous: anonymous
             }
@@ -97,7 +98,6 @@ function send(event) {
     }
     event.preventDefault();
 }
-
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);

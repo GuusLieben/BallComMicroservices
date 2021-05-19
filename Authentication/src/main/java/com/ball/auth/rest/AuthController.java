@@ -107,6 +107,9 @@ public class AuthController {
             temp.setEmail(user.getEmail());
             temp.setPasswordHash(this.hasher.hashToString(12, user.getPassword().toCharArray()));
             temp.setRole(user.getRole());
+            temp.setMeta(new HashMap<>());
+            temp.getMeta().put("firstName", user.getFirstName());
+            temp.getMeta().put("lastName", user.getLastName());
             User saved = this.userRepository.save(temp);
             this.sender.userCreated(saved);
             return saved;

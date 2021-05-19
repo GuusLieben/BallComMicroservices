@@ -13,6 +13,8 @@ import lombok.Setter;
 public class UserCreateModel {
 
     private String email;
+    private String firstName;
+    private String lastName;
     private String password;
     private UserRole role;
 

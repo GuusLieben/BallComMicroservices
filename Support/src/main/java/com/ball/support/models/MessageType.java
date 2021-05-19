@@ -1,4 +1,4 @@
-package com.ball.socket.models;
+package com.ball.support.models;
 
 public enum MessageType {
     CHAT,

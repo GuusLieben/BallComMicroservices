@@ -31,7 +31,7 @@ gateway:
   ws:
     handlers:
       -
-        prefix: support
+        prefix: support-**
         url: http://localhost:8087/chat
   filters:
     # AUTHENTICATION Service

@@ -11,6 +11,7 @@ public class SocketMessage {
 
     private String content;
     private String sender;
+    private String topic;
     private MessageType type;
     private Map<String, Object> meta = new HashMap<>();
 

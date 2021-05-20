@@ -7,15 +7,15 @@ import com.ball.support.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventHandler {
+public class UserNameHandler implements Handler {
 
     private final UserRepository repository;
 
-    public EventHandler(UserRepository repository) {
+    public UserNameHandler(UserRepository repository) {
         this.repository = repository;
     }
 
-    public void handle(AuthEvent event) {
+    public void created(AuthEvent event) {
         String email = event.getEmail();
         String firstName = "Unknown";
         String lastName = "User";
@@ -23,6 +23,16 @@ public class EventHandler {
         if (event.getMeta().containsKey("lastName")) lastName = event.getMeta().get("lastName");
         UserName userName = new UserName(email, firstName, lastName);
         this.repository.save(userName);
+    }
+
+    public void updated(AuthEvent event) {
+        // Overwrites existing usernames with the latest information
+        this.created(event);
+    }
+
+    public void deleted(AuthEvent event) {
+        String email = event.getEmail();
+        this.repository.deleteById(email);
     }
 
 }

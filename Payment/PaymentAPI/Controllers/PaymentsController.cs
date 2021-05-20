@@ -38,9 +38,12 @@ namespace PaymentAPI.Controllers
 
         // PUT api/<PaymentsController>/5
         [HttpPut("{id}/reject")]
-        public async Task<ActionResult> Rejected(int id)
+        public async Task<ActionResult> Rejected(Guid id)
         {
             // change status in database
+            Payment payment = _repository.Get(id);
+            payment.PaymentState = "Rejected";
+            _repository.Update(payment);
             // publish message
             await _messagePublisher.PublishMessageAsync(new PaymentRejected());
 
@@ -49,9 +52,12 @@ namespace PaymentAPI.Controllers
 
         // PUT api/<PaymentsController>/5
         [HttpPut("{id}/pay")]
-        public async Task<ActionResult> Recieved(int id)
+        public async Task<ActionResult> Recieved(Guid id)
         {
             // change status in database
+            Payment payment = _repository.Get(id);
+            payment.PaymentState = "Recieved";
+            _repository.Update(payment);
             // publish message
             await _messagePublisher.PublishMessageAsync(new PaymentRecieved());
 

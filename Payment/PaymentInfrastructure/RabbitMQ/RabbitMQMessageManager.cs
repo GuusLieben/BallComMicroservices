@@ -49,8 +49,8 @@ namespace PaymentInfrastructure.RabbitMQ
 				JObject messageObject = MessageSerializer.Deserialize(message);
 				switch (messageType)
 				{
-					case "OrderCreatedEvent":
-						await HandleAsync(messageObject.ToObject<PaymentRegistered>());
+					case "OrderCreated":
+						await HandleAsync(messageObject.ToObject<OrderCreated>());
 						break;
 					default:
 						break;
@@ -64,25 +64,31 @@ namespace PaymentInfrastructure.RabbitMQ
 			return true;
 		}
 
-		private Task HandleAsync(PaymentRegistered evt)
+		private Task HandleAsync(OrderCreated evt)
 		{
 			Debug.WriteLine("-------------------------------------------");
-			//Debug.WriteLine("SupplierId: " + evt.Guid);
-			//Debug.WriteLine("Email: " + evt.Email);
-			//Debug.WriteLine("Name: " + evt.Meta["company"]);
+            Debug.WriteLine("OrderId: " + evt.OrderId);
+            Debug.WriteLine("TotalAmount: " + evt.TotalAmount);
+            Debug.WriteLine("PaymentType: " + evt.PaymentType);
+
 			Debug.WriteLine("-------------------------------------------");
 
 			Debug.WriteLine("Handled event");
 
 			Payment newPayment = new Payment()
 			{
-				//PaymentId = evt.Guid,
-				//Email = evt.Email,
-				//Name = evt.Meta.ContainsKey("company") ? evt.Meta["company"].ToString() : "UNKNOWN"
-			};
+				PaymentId = Guid.NewGuid(),
+				OrderId = evt.OrderId,
+				PaymentType = evt.PaymentType,
+				Amount = evt.TotalAmount,
+				PaymentState = "Registered",
+				CreationDate = new DateTime(),
+				PaymentRecievedDate = new DateTime(1990, 1, 1)
+            };
 
 			_paymentRepository.Save(newPayment);
-			//publish PaymentRegistered Event
+
+			//TODO publish PaymentRegistered Event
 
 			return Task.CompletedTask;
 		}

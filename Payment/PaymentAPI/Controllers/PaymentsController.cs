@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PaymentDomain.Events;
+using PaymentDomain.Models;
+using PaymentDomain.Services;
 using PaymentInfrastructure.Interfaces;
 
 namespace PaymentAPI.Controllers
@@ -13,48 +15,55 @@ namespace PaymentAPI.Controllers
     public class PaymentsController : ControllerBase
     {
         private readonly IMessagePublisher _messagePublisher;
+        private readonly IPaymentRepository _repository;
 
-
-        public PaymentsController(IMessagePublisher publisher)
+        public PaymentsController(IMessagePublisher publisher, IPaymentRepository repository)
         {
             _messagePublisher = publisher;
-        }
-        // get payment
-        // update status
-
-        // GET: api/<PaymentsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
+            _repository = repository;
         }
 
-        // GET api/<PaymentsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // PUT api/<PaymentsController>/5
+        [HttpPut("{id}/approve")]
+        public async Task<ActionResult> Approved(Guid id)
         {
-            return "value";
+            // change status in database
+            Payment payment = _repository.Get(id);
+            payment.PaymentState = "Approved";
+            _repository.Update(payment);
+            // publish message
+            await _messagePublisher.PublishMessageAsync(new PaymentApproved());
+            return Ok();
+        }
+
+        // PUT api/<PaymentsController>/5
+        [HttpPut("{id}/reject")]
+        public async Task<ActionResult> Rejected(int id)
+        {
+            // change status in database
+            // publish message
+            await _messagePublisher.PublishMessageAsync(new PaymentRejected());
+
+            return Ok();
+        }
+
+        // PUT api/<PaymentsController>/5
+        [HttpPut("{id}/pay")]
+        public async Task<ActionResult> Recieved(int id)
+        {
+            // change status in database
+            // publish message
+            await _messagePublisher.PublishMessageAsync(new PaymentRecieved());
+
+            return Ok();
         }
 
         //// POST api/<PaymentsController>
-        //[HttpPost]
-        //public async Task<ActionResult> Post()
-        //{
-        //    await _messagePublisher.PublishMessageAsync(new PaymentRegistered());
-        //    return Ok();
-        //}
-
-        // PUT api/<PaymentsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost]
+        public async Task<ActionResult> Post()
         {
-        }
-
-        // DELETE api/<PaymentsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-
+            await _messagePublisher.PublishMessageAsync(new OrderCreated() { OrderId = Guid.NewGuid(), PaymentType = "Debit", TotalAmount = 19.95 });
+            return Ok();
         }
     }
 }

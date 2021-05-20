@@ -39,7 +39,7 @@ namespace PaymentAPI
 
             services.AddScoped<IPaymentRepository, EFPaymentRepository>();
 
-            //services.UseRabbitMQMessageHandler(Configuration);
+            services.UseRabbitMQMessageHandler(Configuration);
             services.UseRabbitMQMessagePublisher(Configuration);
         }
 

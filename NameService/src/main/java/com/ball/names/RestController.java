@@ -20,7 +20,7 @@ public class RestController {
 
     @GetMapping("/single")
     public String getSingle() {
-        int index = this.random.nextInt(100) + 1;
+        int index = this.random.nextInt(100);
         return this.controller.findLatestNames().get(index);
     }
 }

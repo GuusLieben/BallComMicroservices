@@ -43,13 +43,13 @@ namespace PaymentInfrastructure.RabbitMQ
 
 
 		public async Task<bool> HandleMessageAsync(string messageType, string message)
-		{
+		{ 
 			try
 			{
 				JObject messageObject = MessageSerializer.Deserialize(message);
 				switch (messageType)
 				{
-					case "PaymentRegistered":
+					case "OrderCreatedEvent":
 						await HandleAsync(messageObject.ToObject<PaymentRegistered>());
 						break;
 					default:
@@ -72,6 +72,8 @@ namespace PaymentInfrastructure.RabbitMQ
 			//Debug.WriteLine("Name: " + evt.Meta["company"]);
 			Debug.WriteLine("-------------------------------------------");
 
+			Debug.WriteLine("Handled event");
+
 			Payment newPayment = new Payment()
 			{
 				//PaymentId = evt.Guid,
@@ -80,6 +82,7 @@ namespace PaymentInfrastructure.RabbitMQ
 			};
 
 			_paymentRepository.Save(newPayment);
+			//publish PaymentRegistered Event
 
 			return Task.CompletedTask;
 		}

@@ -4,7 +4,7 @@ using PaymentDomain.Models;
 
 namespace PaymentDomain.Events
 {
-    public class PaymentRegistered
+    public class PaymentRegistered : IEvent
     {
         public Guid PaymentId;
         public Guid OrderId;
@@ -14,6 +14,10 @@ namespace PaymentDomain.Events
         public DateTime CreationDate;
         public DateTime PaymentRecievedDate;
         public Dictionary<string, object> Meta { get; set; }
+
+        public string EventName => "PaymentCreated";
+
+        public Guid EventId { get; set; } = Guid.NewGuid();
 
         public PaymentRegistered()
         {

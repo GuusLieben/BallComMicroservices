@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using PaymentDomain.Events;
 using PaymentInfrastructure.Interfaces;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PaymentAPI.Controllers
 {
@@ -13,8 +12,15 @@ namespace PaymentAPI.Controllers
     [ApiController]
     public class PaymentsController : ControllerBase
     {
-        IMessagePublisher _messagePublisher;
+        private readonly IMessagePublisher _messagePublisher;
 
+
+        public PaymentsController(IMessagePublisher publisher)
+        {
+            _messagePublisher = publisher;
+        }
+        // get payment
+        // update status
 
         // GET: api/<PaymentsController>
         [HttpGet]
@@ -30,11 +36,13 @@ namespace PaymentAPI.Controllers
             return "value";
         }
 
-        // POST api/<PaymentsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        //// POST api/<PaymentsController>
+        //[HttpPost]
+        //public async Task<ActionResult> Post()
+        //{
+        //    await _messagePublisher.PublishMessageAsync(new PaymentRegistered());
+        //    return Ok();
+        //}
 
         // PUT api/<PaymentsController>/5
         [HttpPut("{id}")]
@@ -46,6 +54,7 @@ namespace PaymentAPI.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+
         }
     }
 }

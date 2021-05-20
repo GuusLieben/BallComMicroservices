@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using PaymentInfrastructure.Context;
 using PaymentDomain.Services;
 using PaymentInfrastructure.Repositories;
+using PaymentInfrastructure.RabbitMQ;
 
 namespace PaymentAPI
 {
@@ -37,6 +38,9 @@ namespace PaymentAPI
             });
 
             services.AddScoped<IPaymentRepository, EFPaymentRepository>();
+
+            //services.UseRabbitMQMessageHandler(Configuration);
+            services.UseRabbitMQMessagePublisher(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -88,6 +88,8 @@ public class AuthController {
 
             User saved = this.userRepository.save(user);
             saved.setPasswordHash(null);
+
+            this.sender.userUpdated(saved);
             saved.setGuid(null);
             return saved;
         }

@@ -25,10 +25,7 @@ window.onbeforeunload = function(){
                 JSON.stringify({
                     sender: username,
                     type: 'LEAVE',
-                    topic: topic,
-                    meta: {
-                        anonymous: anonymous
-                    }
+                    topic: topic
                 })
             )
    }
@@ -87,10 +84,7 @@ function send(event) {
             sender: username,
             content: messageInput.value,
             type: 'CHAT',
-            topic: topic,
-            meta: {
-                anonymous: anonymous
-            }
+            topic: topic
         };
 
         stompClient.send("/app/chat.send/" + topic, {}, JSON.stringify(socketMessage));
@@ -106,22 +100,22 @@ function onMessageReceived(payload) {
 
     if(message.type === 'JOIN') {
         messageElement.classList.add('event-message');
-        message.content = (message.meta['name'] ?? 'Unknown person') + ' joined!';
+        message.content = (message.sender ?? 'Unknown person') + ' joined!';
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
-        message.content = (message.meta['name'] ?? 'Unknown person') + ' left!';
+        message.content = (message.sender ?? 'Unknown person') + ' left!';
     } else {
         messageElement.classList.add('chat-message');
 
         var avatarElement = document.createElement('i');
-        var avatarText = document.createTextNode((message.meta['name'] ?? 'Unknown person')[0]);
+        var avatarText = document.createTextNode((message.sender ?? 'Unknown person')[0]);
         avatarElement.appendChild(avatarText);
-        avatarElement.style['background-color'] = getAvatarColor((message.meta['name'] ?? 'Unknown person'));
+        avatarElement.style['background-color'] = getAvatarColor((message.sender ?? 'Unknown person'));
 
         messageElement.appendChild(avatarElement);
 
         var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode((message.meta['name'] ?? 'Unknown person'));
+        var usernameText = document.createTextNode((message.sender ?? 'Unknown person'));
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
     }

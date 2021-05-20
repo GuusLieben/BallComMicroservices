@@ -53,9 +53,9 @@ public class SupportController {
                 break;
         }
 
-        if (anonymous) message.setSender(null);
-        message.getMeta().put("name", this.name(identifier));
+        message.getMeta().remove("anonymous");
 
+        message.setSender(this.name(identifier));
         return message;
     }
 
@@ -65,6 +65,6 @@ public class SupportController {
     }
 
     private String name(String identifier) {
-        return this.nameStorage.getOrDefault(identifier, "Anonymous");
+        return this.nameStorage.getOrDefault(identifier, "Unknown User");
     }
 }

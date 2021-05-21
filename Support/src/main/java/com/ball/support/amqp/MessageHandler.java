@@ -5,15 +5,12 @@ import com.ball.support.models.amqp.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-@Component
 public enum MessageHandler {
     EVENT_HANDLER(AuthEvent.class, AuthEventHandler.class, AuthEventHandler::handle,
             "CustomerAdded", "EmployeeAdded", "CustomerUpdated", "EmployeeUpdated", "CustomerDeleted", "EmployeeDeleted"),
@@ -24,9 +21,6 @@ public enum MessageHandler {
     USERNAME_DELETED_HANDLER(AuthEvent.class, UserNameHandler.class, UserNameHandler::deleted,
             "CustomerDeleted", "EmployeeDeleted"),
     ;
-
-    @Autowired
-    private BeanFactory beanFactory;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private final String[] headers;
@@ -50,9 +44,9 @@ public enum MessageHandler {
         return events;
     }
 
-    public static void handle(String header, String body) {
+    public static void handle(String header, String body, BeanFactory beanFactory) {
         for (MessageHandler handler : lookup(header)) {
-            final Handler bean = handler.beanFactory.getBean(handler.handlerType);
+            final Handler bean = beanFactory.getBean(handler.handlerType);
             try {
                 Event event = MAPPER.readValue(body, handler.eventType);
                 handler.action.accept(bean, event);

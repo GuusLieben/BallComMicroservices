@@ -2,6 +2,7 @@ package com.ball.support.models.amqp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +37,8 @@ public class AuthEvent implements Event {
     @GeneratedValue
     @Column(name = "id")
     private Long eventId;
+
+    private LocalDateTime written;
 
     private UUID guid;
 

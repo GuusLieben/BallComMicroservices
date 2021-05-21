@@ -5,6 +5,8 @@ import com.ball.support.repository.UserEventRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AuthEventHandler implements Handler {
 
@@ -15,6 +17,7 @@ public class AuthEventHandler implements Handler {
     }
 
     public void handle(AuthEvent event) {
+        event.setWritten(LocalDateTime.now());
         this.repository.save(event);
     }
 }

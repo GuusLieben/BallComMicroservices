@@ -16,7 +16,10 @@ public enum MessageHandler {
     SHIPMENT_REGISTERED(ShipmentRegisteredEvent.class, EventHandler.class, EventHandler::registered,
             "ShipmentRegistered"),
     ORDER_CREATED(OrderCreatedEvent.class, EventHandler.class, EventHandler::created,
-            "OrderCreated");
+            "OrderCreated"),
+    ORDER_CREATED_EVENT(OrderCreatedEvent.class, OrderEventHandler.class, OrderEventHandler::handle,
+            "OrderCreated"),
+    ;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private final String[] headers;

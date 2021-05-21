@@ -19,14 +19,15 @@ namespace PaymentInfrastructure.RabbitMQ
     {
         private readonly IMessageListener _messageListener;
         private readonly IPaymentRepository _paymentRepository;
-		private readonly EventLogContext eventLogDb;
         private readonly IServiceScope _scope;
+		private readonly IMessagePublisher _messagePublisher;
 
         public RabbitMQMessageManager(IServiceScopeFactory scopeFactory)
         {
             _scope = scopeFactory.CreateScope();
             _messageListener = _scope.ServiceProvider.GetRequiredService<IMessageListener>();
             _paymentRepository = _scope.ServiceProvider.GetRequiredService<IPaymentRepository>();
+			_messagePublisher = _scope.ServiceProvider.GetRequiredService<IMessagePublisher>();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -66,7 +67,7 @@ namespace PaymentInfrastructure.RabbitMQ
 			return true;
 		}
 
-		private Task HandleAsync(OrderCreatedEvent evt)
+		private async Task HandleAsync(OrderCreatedEvent evt)
 		{
 			Payment newPayment = new Payment()
 			{
@@ -80,11 +81,12 @@ namespace PaymentInfrastructure.RabbitMQ
 			};
 
             _paymentRepository.Save(newPayment);
+			EventLogContext _eventLogDb = _scope.ServiceProvider.GetRequiredService<EventLogContext>();
 
 			//TODO publish PaymentRegistered Event
-
-
-			return Task.CompletedTask;
+			PaymentRegistered paymentRegisteredEvent = new PaymentRegistered(newPayment);
+			await _messagePublisher.PublishMessageAsync(paymentRegisteredEvent);
+			await _eventLogDb.LogEvent(paymentRegisteredEvent);
 		}
 	}
 }

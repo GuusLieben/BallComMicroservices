@@ -36,7 +36,7 @@ namespace PaymentAPI.Controllers
             _repository.Update(payment);
             
             // publish message
-            PaymentApproved evt = new PaymentApproved();
+            PaymentApproved evt = new PaymentApproved(payment);
             await _messagePublisher.PublishMessageAsync(evt);
             await _eventLogDb.LogEvent(evt);
             
@@ -53,7 +53,7 @@ namespace PaymentAPI.Controllers
             _repository.Update(payment);
 
             // publish message
-            PaymentRejected evt = new PaymentRejected();
+            PaymentRejected evt = new PaymentRejected(payment);
             await _messagePublisher.PublishMessageAsync(evt);
             await  _eventLogDb.LogEvent(evt);
 
@@ -67,10 +67,11 @@ namespace PaymentAPI.Controllers
             // change status in database
             Payment payment = _repository.Get(id);
             payment.PaymentState = "Recieved";
+            payment.PaymentRecievedDate = new DateTime();
             _repository.Update(payment);
 
             // publish message
-            PaymentRecieved evt = new PaymentRecieved();
+            PaymentRecieved evt = new PaymentRecieved(payment);
             await _messagePublisher.PublishMessageAsync(evt);
             await _eventLogDb.LogEvent(evt);
             

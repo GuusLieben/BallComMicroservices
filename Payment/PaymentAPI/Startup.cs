@@ -70,6 +70,7 @@ namespace PaymentAPI
             // auto migrate db
             using IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
             scope.ServiceProvider.GetService<PaymentDbContext>().MigrateDB();
+            scope.ServiceProvider.GetService<EventLogContext>().MigrateDB();
         }
     }
 }

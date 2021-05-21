@@ -44,7 +44,6 @@ namespace PaymentInfrastructure.RabbitMQ
 				.Execute(() =>
 				{
 					ConnectionFactory factory = new ConnectionFactory() { HostName = _host, UserName = _username, Password = _password, DispatchConsumersAsync = true };
-					Console.WriteLine("Host: " + _host + " , port: " + _port);
 					_connection = factory.CreateConnection();
 					_model = _connection.CreateModel();
 

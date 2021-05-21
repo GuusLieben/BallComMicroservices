@@ -8,7 +8,7 @@ namespace PaymentDomain.Events
     {
         public Guid PaymentId;
         public Guid OrderId;
-        public string PaymentType;
+        public PaymentType PaymentType;
         public double Amount;
         public string PaymentState;
         public DateTime CreationDate;
@@ -16,5 +16,16 @@ namespace PaymentDomain.Events
         public string EventName => "PaymentCreated";
 
         public Guid EventId { get; set; } = Guid.NewGuid();
+        
+       public PaymentRegistered(Payment payment)
+        {
+            PaymentId = payment.PaymentId;
+            OrderId = payment.OrderId;
+            PaymentType = payment.PaymentType;
+            Amount = payment.Amount;
+            PaymentState = payment.PaymentState;
+            CreationDate = payment.CreationDate;
+        }
+        
     }
 }

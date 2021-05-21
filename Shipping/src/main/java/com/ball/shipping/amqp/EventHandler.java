@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
-public class EventHandler {
+public class EventHandler implements Handler {
 
     @Autowired
     private RabbitMQSender sender;
@@ -25,11 +25,11 @@ public class EventHandler {
     @Autowired
     private ShipperRepository shippers;
 
-    public void handle(ShipmentRegisteredEvent event) {
+    public void registered(ShipmentRegisteredEvent event) {
         System.out.println("Registered shipment!");
     }
 
-    public void handle(OrderCreatedEvent event) {
+    public void created(OrderCreatedEvent event) {
         Shipment shipment = event.toShipment();
         shipment.setState(ShipmentState.REGISTERED);
 

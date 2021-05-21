@@ -7,13 +7,14 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RabbitMQListener {
 
     @Autowired
-    private EventHandler handler;
+    private ApplicationContext context;
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "${ball.rabbitmq.queue}", durable = "true"),
@@ -21,7 +22,6 @@ public class RabbitMQListener {
     ))
     public void when(Message message, String body) {
         Object messageType = message.getMessageProperties().getHeader("MessageType");
-        ListenableEvent event = ListenableEvent.lookup(String.valueOf(messageType));
-        if (event != null) event.handle(body, this.handler);
+        MessageHandler.handle(String.valueOf(messageType), body, this.context);
     }
 }

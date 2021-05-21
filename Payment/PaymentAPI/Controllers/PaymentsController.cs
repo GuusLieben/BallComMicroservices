@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using PaymentDomain.Events;
 using PaymentDomain.Models;
 using PaymentDomain.Services;
+using PaymentInfrastructure.Context;
 using PaymentInfrastructure.Interfaces;
 
 namespace PaymentAPI.Controllers
@@ -16,11 +17,13 @@ namespace PaymentAPI.Controllers
     {
         private readonly IMessagePublisher _messagePublisher;
         private readonly IPaymentRepository _repository;
+        private readonly EventLogContext _eventLogDb;
 
-        public PaymentsController(IMessagePublisher publisher, IPaymentRepository repository)
+        public PaymentsController(IMessagePublisher publisher, IPaymentRepository repository, EventLogContext context)
         {
             _messagePublisher = publisher;
             _repository = repository;
+            _eventLogDb = context;
         }
 
         // PUT api/<PaymentsController>/5
@@ -31,8 +34,12 @@ namespace PaymentAPI.Controllers
             Payment payment = _repository.Get(id);
             payment.PaymentState = "Approved";
             _repository.Update(payment);
+            
             // publish message
-            await _messagePublisher.PublishMessageAsync(new PaymentApproved());
+            PaymentApproved evt = new PaymentApproved();
+            await _messagePublisher.PublishMessageAsync(evt);
+            await _eventLogDb.LogEvent(evt);
+            
             return Ok();
         }
 
@@ -44,8 +51,11 @@ namespace PaymentAPI.Controllers
             Payment payment = _repository.Get(id);
             payment.PaymentState = "Rejected";
             _repository.Update(payment);
+
             // publish message
-            await _messagePublisher.PublishMessageAsync(new PaymentRejected());
+            PaymentRejected evt = new PaymentRejected();
+            await _messagePublisher.PublishMessageAsync(evt);
+            await  _eventLogDb.LogEvent(evt);
 
             return Ok();
         }
@@ -58,9 +68,12 @@ namespace PaymentAPI.Controllers
             Payment payment = _repository.Get(id);
             payment.PaymentState = "Recieved";
             _repository.Update(payment);
-            // publish message
-            await _messagePublisher.PublishMessageAsync(new PaymentRecieved());
 
+            // publish message
+            PaymentRecieved evt = new PaymentRecieved();
+            await _messagePublisher.PublishMessageAsync(evt);
+            await _eventLogDb.LogEvent(evt);
+            
             return Ok();
         }
 
@@ -68,7 +81,15 @@ namespace PaymentAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> Post()
         {
-            await _messagePublisher.PublishMessageAsync(new OrderCreated() { OrderId = Guid.NewGuid(), PaymentType = "Debit", TotalAmount = 19.95 });
+            await _messagePublisher.PublishMessageAsync(new OrderCreatedEvent() { orderId = Guid.NewGuid(), paymentType = PaymentType.AFTER_PAY, totalPrice = 19.95});
+            
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Get()
+        {
+
             return Ok();
         }
     }

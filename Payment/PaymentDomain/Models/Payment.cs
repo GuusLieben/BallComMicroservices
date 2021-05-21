@@ -5,7 +5,7 @@ namespace PaymentDomain.Models
     {
         public Guid PaymentId { get; set; }
         public Guid OrderId { get; set; }
-        public string PaymentType { get; set; }
+        public PaymentType PaymentType { get; set; }
         public double Amount { get; set; }
         public string PaymentState { get; set; }
         public DateTime CreationDate { get; set; }

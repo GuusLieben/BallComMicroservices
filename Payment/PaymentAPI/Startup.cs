@@ -37,6 +37,11 @@ namespace PaymentAPI
                 options.UseSqlServer(Configuration["Database:Main"], actions => actions.MigrationsAssembly("PaymentInfrastructure"));
             });
 
+            services.AddDbContext<EventLogContext>(options =>
+            {
+                options.UseSqlServer(Configuration["Database:Main"], actions => actions.MigrationsAssembly("PaymentInfrastructure"));
+            });
+
             services.AddScoped<IPaymentRepository, EFPaymentRepository>();
 
             services.UseRabbitMQMessageHandler(Configuration);

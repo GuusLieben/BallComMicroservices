@@ -5,11 +5,11 @@ using System.Text;
 
 namespace PaymentDomain.Events
 {
-    public class OrderCreated : IEvent
+    public class OrderCreatedEvent : IEvent
     {
-        public Guid OrderId;
-        public double TotalAmount;
-        public string PaymentType;
+        public Guid orderId;
+        public PaymentType paymentType;
+        public double totalPrice;
 
         public string EventName => "OrderCreated";
 

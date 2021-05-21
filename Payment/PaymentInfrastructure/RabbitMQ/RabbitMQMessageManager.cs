@@ -11,6 +11,7 @@ using PaymentDomain.Events;
 using Newtonsoft.Json.Linq;
 using PaymentDomain.Models;
 using Microsoft.Extensions.Hosting;
+using PaymentInfrastructure.Context;
 
 namespace PaymentInfrastructure.RabbitMQ
 {
@@ -18,6 +19,7 @@ namespace PaymentInfrastructure.RabbitMQ
     {
         private readonly IMessageListener _messageListener;
         private readonly IPaymentRepository _paymentRepository;
+		private readonly EventLogContext eventLogDb;
         private readonly IServiceScope _scope;
 
         public RabbitMQMessageManager(IServiceScopeFactory scopeFactory)
@@ -50,7 +52,7 @@ namespace PaymentInfrastructure.RabbitMQ
 				switch (messageType)
 				{
 					case "OrderCreated":
-						await HandleAsync(messageObject.ToObject<OrderCreated>());
+						await HandleAsync(messageObject.ToObject<OrderCreatedEvent>());
 						break;
 					default:
 						break;
@@ -64,31 +66,23 @@ namespace PaymentInfrastructure.RabbitMQ
 			return true;
 		}
 
-		private Task HandleAsync(OrderCreated evt)
+		private Task HandleAsync(OrderCreatedEvent evt)
 		{
-			Debug.WriteLine("-------------------------------------------");
-            Debug.WriteLine("OrderId: " + evt.OrderId);
-            Debug.WriteLine("TotalAmount: " + evt.TotalAmount);
-            Debug.WriteLine("PaymentType: " + evt.PaymentType);
-
-			Debug.WriteLine("-------------------------------------------");
-
-			Debug.WriteLine("Handled event");
-
 			Payment newPayment = new Payment()
 			{
 				PaymentId = Guid.NewGuid(),
-				OrderId = evt.OrderId,
-				PaymentType = evt.PaymentType,
-				Amount = evt.TotalAmount,
+				OrderId = evt.orderId,
+				PaymentType = evt.paymentType,
+				Amount = evt.totalPrice,
 				PaymentState = "Registered",
 				CreationDate = new DateTime(),
 				PaymentRecievedDate = new DateTime(1990, 1, 1)
-            };
+			};
 
-			_paymentRepository.Save(newPayment);
+            _paymentRepository.Save(newPayment);
 
 			//TODO publish PaymentRegistered Event
+
 
 			return Task.CompletedTask;
 		}

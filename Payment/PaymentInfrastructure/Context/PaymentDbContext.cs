@@ -13,6 +13,7 @@ namespace PaymentInfrastructure.Context
 
 
         public DbSet<Payment> Payments { get; set; }
+
         public void MigrateDB()
         {
             Policy

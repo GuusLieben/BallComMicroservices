@@ -7,6 +7,8 @@ namespace InventoryDomain.Events
 	{
 		public Guid EventId { get; set; } = Guid.NewGuid();
 
+		public ProductCreated() { }
+
 		public ProductCreated(Product product)
 		{
 			ProductId = product.ProductId;
@@ -15,8 +17,8 @@ namespace InventoryDomain.Events
 			Amount = product.Amount;
 			Description = product.Description;
 			Price = product.Price;
-			BrandName = product.Brand.Name;
-			SupplierName = product.Supplier != null ? product.Supplier.Name : "Ball.com"; 
+			BrandName = product.Brand;
+			SupplierName = product.Supplier != null ? product.Supplier : "Ball.com"; 
 		}
 
 		public Guid ProductId { get; set; }

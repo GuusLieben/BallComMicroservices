@@ -26,5 +26,7 @@ namespace InventoryDomain.Models
 			Brand = evt.BrandName;
 			Supplier = evt.SupplierName;
 		}
+
+		public Product() { }
 	}
 }

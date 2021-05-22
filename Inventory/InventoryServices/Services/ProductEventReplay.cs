@@ -24,6 +24,7 @@ namespace InventoryServices.Services
 		{
 			IEnumerable<IEvent> events = _writeDb.EventLog
 				.Where(evt => evt.CreatedOnDate <= utcTime)
+				.OrderBy(evt => evt.CreatedOnDate)
 				.Select(evt => DeserializeToEvent(evt));
 
 			List<Product> products = new List<Product>();
@@ -52,7 +53,7 @@ namespace InventoryServices.Services
 						StockRemoved srEvent = evt as StockRemoved;
 						p = products.FirstOrDefault(p => p.ProductId == srEvent.ProductId);
 						if (p != null)
-							p.Amount += srEvent.Amount;
+							p.Amount -= srEvent.Amount;
 
 						break;
 				}
@@ -61,7 +62,7 @@ namespace InventoryServices.Services
 			return products;
 		}
 
-		private IEvent DeserializeToEvent(EventLog log)
+		private static IEvent DeserializeToEvent(EventLog log)
 		{
 			return log.EventName switch
 			{

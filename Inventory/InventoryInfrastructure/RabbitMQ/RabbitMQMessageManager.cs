@@ -5,9 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,20 +54,17 @@ namespace InventoryInfrastructure.RabbitMQ
 						await HandleAsync(messageObject.ToObject<StockRemoved>());
 						break;
 
-
-
-
 					default:
 						break;
 				}
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				return false;
 			}
 
-            return true;
-        }
+			return true;
+		}
 
 		private async Task HandleAsync(ProductCreated createdEvent)
 		{

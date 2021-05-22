@@ -52,7 +52,7 @@ namespace InventoryInfrastructure.RabbitMQ
 				.WaitAndRetry(9, r => TimeSpan.FromSeconds(5))
 				.Execute(() =>
 				{
-					ConnectionFactory factory = new ConnectionFactory() { HostName = _host, UserName = _username, Password = _password, Port = _port };
+					ConnectionFactory factory = new ConnectionFactory() { HostName = _host, UserName = _username, Password = _password };
 					factory.AutomaticRecoveryEnabled = true;
 					_connection = factory.CreateConnection();
 					_model = _connection.CreateModel();

@@ -3,7 +3,6 @@ using InventoryDomain.Events;
 using InventoryDomain.Models;
 using InventoryInfrastructure;
 using InventoryInfrastructure.RabbitMQ.Interfaces;
-using InventoryServices.Enum;
 using InventoryServices.Helpers;
 using InventoryServices.Models;
 using InventoryServices.Services;
@@ -36,6 +35,8 @@ namespace InventoryAPI.Controllers
 		[HttpPost("internal")]
 		public async Task<IActionResult> AddInternalProduct(Product product)
 		{
+			Console.WriteLine(product.ProductId);
+
 			ProductCreated evt = new ProductCreated(product);
 		
 			await _messagePublisher.PublishMessageAsync(evt);
@@ -44,7 +45,7 @@ namespace InventoryAPI.Controllers
 			return Ok(product);
 		}
 
-		[HttpPost("external")]
+		[HttpPost("supplier")]
 		public async Task<IActionResult> AddSupplierProduct(Product product)
 		{
 			(bool success, string err) = HttpContextHelper.TryGetHeaderObject("X-Token-Payload", HttpContext, out XTokenPayload payload);
@@ -120,7 +121,6 @@ namespace InventoryAPI.Controllers
 
 		private async Task<IActionResult> RemoveStock(Guid productId, int amount, IEnumerable<Product> knownProducts)
 		{
-			IEnumerable<Product> knownProducts = _productReplayer.ReplayUntil(DateTime.UtcNow);
 			Product knownProduct = knownProducts.FirstOrDefault(p => p.ProductId == productId);
 
 			if (knownProduct == null)

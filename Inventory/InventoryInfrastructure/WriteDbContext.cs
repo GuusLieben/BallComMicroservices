@@ -10,7 +10,7 @@ namespace InventoryInfrastructure
 {
 	public class WriteDbContext : DbContext
 	{
-		public WriteDbContext(DbContextOptions<ReadDbContext> options) : base(options) { }
+		public WriteDbContext(DbContextOptions<WriteDbContext> options) : base(options) { }
 
 		public DbSet<EventLog> EventLog { get; set; }
 
@@ -18,6 +18,7 @@ namespace InventoryInfrastructure
 		{
 			EventLog log = new EventLog()
 			{
+				EventId = evt.EventId,
 				EventName = evt.EventName,
 				EventJson = JsonConvert.SerializeObject(evt)
 			};

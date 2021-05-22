@@ -74,6 +74,7 @@ namespace InventoryAPI
 			// auto migrate db
 			using IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
 			scope.ServiceProvider.GetService<ReadDbContext>().MigrateDB();
+			scope.ServiceProvider.GetService<WriteDbContext>().MigrateDB();
 		}
 	}
 }

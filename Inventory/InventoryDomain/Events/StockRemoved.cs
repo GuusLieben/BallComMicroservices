@@ -9,6 +9,6 @@ namespace InventoryDomain.Events
 		public Guid ProductId { get; set; }
 		public int Amount { get; set; }
 
-		public string EventName => "StockAdded";
+		public string EventName => "StockRemoved";
 	}
 }

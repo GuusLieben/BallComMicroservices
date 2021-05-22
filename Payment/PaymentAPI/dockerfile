@@ -8,6 +8,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["PaymentAPI/PaymentAPI.csproj", "PaymentAPI/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 RUN dotnet restore "PaymentAPI/PaymentAPI.csproj"
 COPY . .
 WORKDIR "/src/PaymentAPI"
@@ -15,6 +17,10 @@ RUN dotnet build "PaymentAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "PaymentAPI.csproj" -c Release -o /app/publish
+
+# Expose ports
+EXPOSE 8085/tcp
+ENV ASPNETCORE_URLS http://*:8085
 
 FROM base AS final
 WORKDIR /app

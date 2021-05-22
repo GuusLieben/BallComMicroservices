@@ -1,7 +1,7 @@
 package nl.avans.infrastructure.api.controllers;
 
 import nl.avans.domain.models.Product;
-import nl.avans.infrastructure.repositories.product.ProductRepository;
+import nl.avans.infrastructure.repositories.interfaces.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,20 +2,22 @@ package nl.avans.domain.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class Product {
-    private UUID id;
+    private UUID productId;
     private String name;
     private String description;
     private double price;
     private int amount;
     private String supplier;
     private String brand;
+    private double weight;
     private int detailsViewed;
+    private String event;
 }

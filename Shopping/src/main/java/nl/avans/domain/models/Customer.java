@@ -3,8 +3,11 @@ package nl.avans.domain.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 public class Customer {
-    public String email;
+    private UUID customerId;
+    private String event;
 }

@@ -1,5 +1,7 @@
 package nl.avans;
 
+import nl.avans.infrastructure.repositories.ConnectionDB;
+import nl.avans.infrastructure.repositories.read_db.SetupConnectionReadDB;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -13,10 +15,10 @@ public class Application {
     @Value("${ball.rabbitmq.exchange}")
     private String exchange;
 
-//    @Bean
-//    TopicExchange exchange() {
-//        return new TopicExchange(exchange);
-//    }
+    @Bean(name="ConnectionDB")
+    public ConnectionDB defaultConnectionDB() {
+        return new SetupConnectionReadDB();
+    }
 
     @Bean
     public Queue getShoppingQueue() {

@@ -9,6 +9,6 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class Basket {
     private Customer customer;
-    private ArrayList<Product> products;
-    private int amount;
+    private ArrayList<BasketItem> products;
+    private String event;
 }

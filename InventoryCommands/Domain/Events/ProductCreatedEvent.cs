@@ -20,6 +20,7 @@ namespace Domain.Events
 			Price = command.Price;
 			BrandName = command.Brand;
 			SupplierName = command.Supplier ?? "Ball.com";
+			Weight = command.Weight;
 		}
 
 		public Guid ProductId { get; set; }
@@ -30,6 +31,7 @@ namespace Domain.Events
 		public decimal Price { get; set; }
 		public string BrandName { get; set; }
 		public string SupplierName { get; set; } = "Ball.com";
+		public decimal Weight { get; set; }
 
 		public string EventName => "ProductCreated";
 	}

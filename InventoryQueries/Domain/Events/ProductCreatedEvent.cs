@@ -14,5 +14,6 @@ namespace Domain.Events
 		public decimal Price { get; set; }
 		public string BrandName { get; set; }
 		public string SupplierName { get; set; } = "Ball.com";
+		public decimal Weight { get; set; }
 	}
 }

@@ -3,6 +3,7 @@ using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,7 +38,7 @@ namespace Infrastructure.RabbitMQ
 
 			Policy
 				.Handle<Exception>()
-				.WaitAndRetry(9, r => TimeSpan.FromSeconds(5))
+				.WaitAndRetry(9, r => TimeSpan.FromSeconds(5), (ex, ts) => { Debug.WriteLine("Error connecting to RabbitMQ. Retrying in 5 sec."); })
 				.Execute(() =>
 				{
 					ConnectionFactory factory = new ConnectionFactory() { HostName = _host, UserName = _username, Password = _password, DispatchConsumersAsync = true };

@@ -13,5 +13,6 @@ namespace Domain.Commands
 		public decimal Price { get; set; }
 		public string Brand { get; set; }
 		public string Supplier { get; set; }
+		public decimal Weight { get; set; }
 	}
 }

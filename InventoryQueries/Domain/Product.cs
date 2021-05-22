@@ -14,6 +14,7 @@ namespace Domain
 		public decimal Price { get; set; }
 		public string Brand { get; set; }
 		public string Supplier { get; set; }
+		public decimal Weight { get; set; }
 
 		public Product() { }
 		public Product(ProductCreatedEvent pcEvent)
@@ -26,6 +27,7 @@ namespace Domain
 			Price = pcEvent.Price;
 			Brand = pcEvent.BrandName;
 			Supplier = pcEvent.SupplierName;
+			Weight = pcEvent.Weight;
 		}
 	}
 }

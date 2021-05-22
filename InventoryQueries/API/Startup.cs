@@ -41,6 +41,14 @@ namespace API
 			{
 				options.UseSqlServer(Configuration["Database:Main"], actions => actions.MigrationsAssembly("Infrastructure"));
 			});
+
+			services.AddLogging(builder =>
+				builder
+					.AddDebug()
+					.AddConsole()
+					.AddConfiguration(Configuration.GetSection("Logging"))
+					.SetMinimumLevel(LogLevel.Information)
+			);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

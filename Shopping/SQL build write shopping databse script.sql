@@ -1,5 +1,5 @@
-IF DB_ID('shopping-writedb') IS NULL
 BEGIN
+	IF DB_ID('shopping-writedb') IS NULL
 	CREATE DATABASE [shopping-writedb];
 END;
 

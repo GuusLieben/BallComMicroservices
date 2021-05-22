@@ -10,6 +10,7 @@ namespace PaymentDomain.Events
         public Guid orderId;
         public PaymentType paymentType;
         public double totalPrice;
+        public List<BasketItem> basket;
 
         public string EventName => "OrderCreated";
 

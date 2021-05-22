@@ -80,17 +80,10 @@ namespace PaymentAPI.Controllers
 
         //// POST api/<PaymentsController>
         [HttpPost]
-        public async Task<ActionResult> Post()
+        public async Task<ActionResult> Post(OrderCreatedEvent body)
         {
-            await _messagePublisher.PublishMessageAsync(new OrderCreatedEvent() { orderId = Guid.NewGuid(), paymentType = PaymentType.AFTER_PAY, totalPrice = 19.95});
+            await _messagePublisher.PublishMessageAsync(body);
             
-            return Ok();
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> Get()
-        {
-
             return Ok();
         }
     }

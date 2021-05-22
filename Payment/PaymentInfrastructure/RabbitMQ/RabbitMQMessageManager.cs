@@ -69,12 +69,18 @@ namespace PaymentInfrastructure.RabbitMQ
 
 		private async Task HandleAsync(OrderCreatedEvent evt)
 		{
+			Console.WriteLine("Order id: " + evt.orderId);
+			double totalprice = 0;
+			foreach (BasketItem item in evt.basket)
+            {
+				totalprice += item.product.price * item.amount;
+            }
 			Payment newPayment = new Payment()
 			{
 				PaymentId = Guid.NewGuid(),
 				OrderId = evt.orderId,
 				PaymentType = evt.paymentType,
-				Amount = evt.totalPrice,
+				Amount = totalprice,
 				PaymentState = "Registered",
 				CreationDate = new DateTime(),
 				PaymentRecievedDate = new DateTime(1990, 1, 1)
@@ -83,7 +89,7 @@ namespace PaymentInfrastructure.RabbitMQ
             _paymentRepository.Save(newPayment);
 			EventLogContext _eventLogDb = _scope.ServiceProvider.GetRequiredService<EventLogContext>();
 
-			//TODO publish PaymentRegistered Event
+			// publish PaymentRegistered Event
 			PaymentRegistered paymentRegisteredEvent = new PaymentRegistered(newPayment);
 			await _messagePublisher.PublishMessageAsync(paymentRegisteredEvent);
 			await _eventLogDb.LogEvent(paymentRegisteredEvent);

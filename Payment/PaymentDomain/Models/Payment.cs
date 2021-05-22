@@ -8,7 +8,7 @@ namespace PaymentDomain.Models
         public PaymentType PaymentType { get; set; }
         public double Amount { get; set; }
         public string PaymentState { get; set; }
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.UtcNow;
         public DateTime PaymentRecievedDate { get; set; }
     }
 }

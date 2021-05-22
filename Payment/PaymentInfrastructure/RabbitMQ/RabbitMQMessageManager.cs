@@ -82,8 +82,7 @@ namespace PaymentInfrastructure.RabbitMQ
 				PaymentType = evt.paymentType,
 				Amount = totalprice,
 				PaymentState = "Registered",
-				CreationDate = new DateTime(),
-				PaymentRecievedDate = new DateTime(1990, 1, 1)
+				PaymentRecievedDate = new DateTime()
 			};
 
             _paymentRepository.Save(newPayment);

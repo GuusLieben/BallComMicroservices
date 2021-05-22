@@ -77,14 +77,5 @@ namespace PaymentAPI.Controllers
             
             return Ok();
         }
-
-        //// POST api/<PaymentsController>
-        [HttpPost]
-        public async Task<ActionResult> Post(OrderCreatedEvent body)
-        {
-            await _messagePublisher.PublishMessageAsync(body);
-            
-            return Ok();
-        }
     }
 }

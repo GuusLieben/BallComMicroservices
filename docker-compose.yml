@@ -60,7 +60,18 @@ services:
       - DOTNET_ENVIRONMENT=Production
     ports:
       - "8084:80"
-
+    
+  paymentAPI:
+    image: ball/paymentsapi:1.0
+    build: Payment
+    container_name: paymentAPI
+    depends_on:
+       - rabbitmq
+       - sqlserver
+    environment:
+       - DOTNET_ENVIRONMENT=Production
+    ports:
+       - "8085:80"
 
 
 volumes:

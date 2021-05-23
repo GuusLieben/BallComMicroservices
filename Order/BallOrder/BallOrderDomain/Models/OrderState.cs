@@ -4,7 +4,7 @@
     {
         InitialOrder = 0,
         WaitingForStock = 1,
-        StartPicking = 2,
+        ReadyForPicking = 2,
         OrderFinished = 3
     }
 }

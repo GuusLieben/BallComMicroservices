@@ -1,14 +1,14 @@
-﻿using System;
+﻿using BallOrder.Models;
+using System;
 using System.Collections.Generic;
-using BallOrder.Models;
 
-namespace BallOrder.Commands
+namespace BallOrderDomain.Commands
 {
-    public class CreateOrder
+    public class PickingFinished
     {
         public Guid OrderId { get; set; }
         public Guid CustomerId { get; set; }
         public OrderState OrderState { get; set; }
-        public List<OrderProduct> OrderProducts { get; set; }
+        public IEnumerable<Basket> Basket { get; set; }
     }
 }

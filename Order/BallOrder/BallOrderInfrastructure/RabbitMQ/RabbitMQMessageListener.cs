@@ -1,17 +1,16 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
-using BallOrderInfrastructure.RabbitMQ.Interfaces;
+﻿using BallOrderInfrastructure.RabbitMQ.Interfaces;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BallOrderInfrastructure.RabbitMQ
 {
-    public class RabbitMQMessageListener : IMessageListener
-    {
+	public class RabbitMQMessageListener : IMessageListener
+	{
 		private readonly string _host;
-		private readonly int _port;
 		private readonly string _username;
 		private readonly string _password;
 		private readonly string _exchange;
@@ -23,10 +22,9 @@ namespace BallOrderInfrastructure.RabbitMQ
 		private IConnection _connection;
 		private string _consumerTag;
 
-		public RabbitMQMessageListener(string host, int port, string username, string password, string exchange, string queue)
+		public RabbitMQMessageListener(string host, string username, string password, string exchange, string queue)
 		{
 			_host = host;
-			_port = port;
 			_username = username;
 			_password = password;
 			_exchange = exchange;

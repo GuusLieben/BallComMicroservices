@@ -4,14 +4,16 @@ using BallOrderInfrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BallOrderInfrastructure.Migrations
 {
-    [DbContext(typeof(BallOrderDBContext))]
-    partial class BallOrderDBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ReadOrderDbContext))]
+    [Migration("20210523124346_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,9 +80,6 @@ namespace BallOrderInfrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Supplier")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("ProductId");
 
                     b.ToTable("Products");
@@ -89,7 +88,7 @@ namespace BallOrderInfrastructure.Migrations
             modelBuilder.Entity("BallOrder.Models.OrderProduct", b =>
                 {
                     b.HasOne("BallOrder.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("OrderProducts")
                         .HasForeignKey("OrderId");
 
                     b.HasOne("BallOrder.Models.Product", "Product")
@@ -99,6 +98,11 @@ namespace BallOrderInfrastructure.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("BallOrder.Models.Order", b =>
+                {
+                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Threading.Tasks;
 using BallOrder.Models;
+using BallOrderDomain.Events;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Polly;
 
 namespace BallOrderInfrastructure.DataAccess
 {
-    public class BallOrderDBContext : DbContext
+    public class ReadOrderDbContext : DbContext
     {
-        public BallOrderDBContext(DbContextOptions<BallOrderDBContext> options) : base(options)
+        public ReadOrderDbContext(DbContextOptions<ReadOrderDbContext> options) : base(options)
         {
 
         }
@@ -15,15 +18,6 @@ namespace BallOrderInfrastructure.DataAccess
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<Order>().Property(order => order.OrderId).ValueGeneratedOnAdd();
-            builder.Entity<Product>().HasKey(product => product.ProductId);
-            builder.Entity<OrderProduct>().HasKey(orderProduct => orderProduct.OrderProductId);
-
-            base.OnModelCreating(builder);
-        }
 
         public void MigrateDB()
         {

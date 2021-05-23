@@ -1,14 +1,15 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using BallOrder.Models;
 using BallOrderDomain.Services;
 using BallOrderInfrastructure.DataAccess;
 using BallOrderInfrastructure.RabbitMQ;
 using BallOrderInfrastructure.Repositories;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace BallOrder
 {
@@ -26,17 +27,31 @@ namespace BallOrder
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BallOrderDBContext>(options =>
+            services.AddDbContext<WriteOrderDbContext>(options =>
             {
-                options.UseSqlServer(Configuration["ball-order-db-local:ConnectionString"], actions => actions.MigrationsAssembly("BallOrderInfrastructure"));
+                options.UseSqlServer(Configuration["ball-order-db-write:ConnectionString"], actions => actions.MigrationsAssembly("BallOrderInfrastructure"));
             });
 
-            services.AddScoped<IOrderProductRepository, EFOrderProductRepository>();
-            services.AddScoped<IOrderRepository, EFOrderRepository>();
+            services.AddDbContext<ReadOrderDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration["ball-order-db-read:ConnectionString"], actions => actions.MigrationsAssembly("BallOrderInfrastructure"));
+            });
+
+            services.AddScoped<IOrderReadProductRepository, EFOrderReadProductRepository>();
+            services.AddScoped<IOrderWriteRepository, EFOrderWriteRepository>();
+            services.AddScoped<IOrderReadOrderRepository, EFOrderReadOrderRepository>();
+            services.AddScoped<IOrderReadOrderProductRepository, EFOrderReadOrderProductRepository>();
+
+            services.AddScoped<OrderEventReplayer>();
 
             services.UseRabbitMQMessageHandler(Configuration);
+            services.UseRabbitMQMessagePublisher(Configuration);
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BallOrder", Version = "v1" });
@@ -51,7 +66,6 @@ namespace BallOrder
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BallOrder v1"));
-                
             }
 
             app.UseHttpsRedirection();
@@ -66,7 +80,8 @@ namespace BallOrder
             });
 
             using IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            scope.ServiceProvider.GetService<BallOrderDBContext>().MigrateDB();
+            scope.ServiceProvider.GetService<WriteOrderDbContext>().MigrateDB();
+            scope.ServiceProvider.GetService<ReadOrderDbContext>().MigrateDB();
         }
     }
 }

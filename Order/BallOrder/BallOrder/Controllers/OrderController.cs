@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BallOrderInfrastructure.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using BallOrder.Models;
+using BallOrderDomain.Commands;
+using BallOrderDomain.Events.Outgoing;
+using BallOrderDomain.Services;
 using BallOrderInfrastructure.DataAccess;
 using BallOrderInfrastructure.RabbitMQ.Interfaces;
-using BallOrderInfrastructure.Repositories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
 
 namespace BallOrder.Controllers
 {
@@ -18,63 +15,42 @@ namespace BallOrder.Controllers
     public class OrderController : Controller
     {
         //IMessagePublisher _messagePublisher;
-        private readonly EFOrderRepository _orderRepository;
+        private readonly IOrderWriteRepository _orderWriteRepository;
+        private readonly OrderEventReplayer _orderEventReplayer;
         private readonly IMessagePublisher _messagePublisher;
+        private readonly IOrderReadOrderRepository _orderReadOrderRepository;
 
-        public OrderController(EFOrderRepository orderRepository, IMessagePublisher messagePublisher)
+        public OrderController(IOrderWriteRepository orderWriteRepository, OrderEventReplayer orderEventReplayer, 
+            IMessagePublisher messagePublisher, IOrderReadOrderRepository orderReadOrderRepository)
         {
-            _orderRepository = orderRepository;
+            _orderWriteRepository = orderWriteRepository;
+            _orderEventReplayer = orderEventReplayer;
             _messagePublisher = messagePublisher;
+            _orderReadOrderRepository = orderReadOrderRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
-        {
-            return Ok(_orderRepository.GetAllOrders());
-        }
-
-        [HttpGet]
-        [Route("{orderId}", Name = "GetOrderById")]
+        [HttpGet("{orderId}")]
         public async Task<IActionResult> GetByCustomerId(Guid orderId)
         {
-            var order = _orderRepository.GetByCustomerId(orderId);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return Ok(order);
+            return Ok(await _orderReadOrderRepository.GetOrderById(orderId));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RegisterAsync(Order order)
+        [HttpPut("{orderId}")]
+        public async Task<IActionResult> PickingFinished(Guid orderId, PickingFinished command)
         {
-            try
+            OrderState orderState = _orderEventReplayer.GetOrderStatus(DateTime.UtcNow, orderId);
+
+            if (orderState != OrderState.ReadyForPicking)
             {
-                if (ModelState.IsValid)
-                {
-                    // insert customer
-                    //Order customer = command.MapToCustomer();
-
-                    _orderRepository.CreateOrderInDatabase(order);
-
-                    // send event
-
-                    await _messagePublisher.PublishMessageAsync("OrderRegistered", order, "Order");
-
-
-                    // return result
-                    return CreatedAtRoute("GetOrderById", new { orderId = order.OrderId }, order);
-                }
-                return BadRequest();
+                return StatusCode(500, "Order status is not on Ready for Picking");
             }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Unable to save changes. " +
-                    "Try again, and if the problem persists " +
-                    "see your system administrator.");
-                return StatusCode(StatusCodes.Status500InternalServerError);
-                throw;
-            }
+
+            OrderPicked orderPicked = new OrderPicked(command);
+
+            await _messagePublisher.PublishMessageAsync(orderPicked);
+            await _orderWriteRepository.AddEventLog(orderPicked);
+
+            return Ok(command);
         }
     }
 }

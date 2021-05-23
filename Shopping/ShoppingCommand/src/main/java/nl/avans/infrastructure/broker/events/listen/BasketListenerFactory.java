@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nl.avans.domain.models.events.basket.BasketEventModel;
 import nl.avans.domain.models.events.basket.CustomerAddedEvent;
+import nl.avans.domain.models.models.BasketItem;
 import nl.avans.domain.services.repository.BasketRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 @Service
@@ -25,8 +27,10 @@ public class BasketListenerFactory implements BasketListener {
             if (events.contains(type)) {
                 BasketEventModel basketEventModel = new BasketEventModel();
                 basketEventModel.setEvent(type);
-                basketEventModel.setCustomerId(mapper.readValue(payload, CustomerAddedEvent.class).getCustomerId());
-                basketEventModel.setData(payload);
+                CustomerAddedEvent customerAddedEvent = mapper.readValue(payload, CustomerAddedEvent.class);
+                customerAddedEvent.setProducts(new ArrayList<BasketItem>());
+                basketEventModel.setCustomerId(customerAddedEvent.getCustomerId());
+                basketEventModel.setData(mapper.writeValueAsString(customerAddedEvent));
                 basketRepository.create(basketEventModel);
             }
         } catch (JsonProcessingException e) {

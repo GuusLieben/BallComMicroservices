@@ -10,5 +10,4 @@ import java.util.ArrayList;
 public class Basket {
     private Customer customer;
     private ArrayList<BasketItem> products;
-    private String event;
 }

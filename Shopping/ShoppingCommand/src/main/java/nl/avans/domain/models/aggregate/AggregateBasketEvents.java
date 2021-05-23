@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.avans.domain.models.events.basket.BasketEventModel;
 import nl.avans.domain.models.events.basket.BasketItemAddedEvent;
 import nl.avans.domain.models.events.basket.BasketItemRemovedEvent;
+import nl.avans.domain.models.events.basket.CustomerAddedEvent;
 import nl.avans.domain.models.models.Basket;
 import nl.avans.domain.models.models.BasketItem;
 import nl.avans.domain.models.models.Customer;
@@ -23,7 +24,11 @@ public class AggregateBasketEvents implements AggregateBasket {
             for (BasketEventModel event : events) {
                 switch (event.getEvent()) {
                     case "CustomerAdded":
-                        basket.setCustomer(mapper.readValue(event.getData(), Customer.class));
+                        CustomerAddedEvent customerAddedEvent = mapper.readValue(event.getData(), CustomerAddedEvent.class);
+                        Customer customer = new Customer();
+                        customer.setCustomerId(customerAddedEvent.getCustomerId());
+                        basket.setCustomer(customer);
+                        basket.setProducts(new ArrayList<BasketItem>());
                         break;
                     case "BasketItemAdded":
                         BasketItemAddedEvent basketItemAddedEvent = mapper.readValue(event.getData(), BasketItemAddedEvent.class);

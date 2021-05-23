@@ -20,7 +20,7 @@ public class BasketController {
     }
 
     @DeleteMapping("/basket")
-    public RemoveBasketIdemViewModel delete(RemoveBasketIdemViewModel viewModel) {
+    public RemoveBasketIdemViewModel delete(@RequestBody RemoveBasketIdemViewModel viewModel) {
         basketHandler.removeBasketItem(viewModel.getCustomerId(), viewModel.getProductId());
         return viewModel;
     }

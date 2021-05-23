@@ -3,14 +3,17 @@ package nl.avans.domain.models.events.basket;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nl.avans.domain.models.events.Event;
 import nl.avans.domain.models.models.BasketItem;
 import nl.avans.domain.models.models.PaymentType;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderCreatedEvent implements Event {
 
     @JsonProperty
@@ -38,5 +41,5 @@ public class OrderCreatedEvent implements Event {
     private String addition;
 
     @JsonProperty
-    private BasketItem[] basket;
+    private ArrayList<BasketItem> basket;
 }

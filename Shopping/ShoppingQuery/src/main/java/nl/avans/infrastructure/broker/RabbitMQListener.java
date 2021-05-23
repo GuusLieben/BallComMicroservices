@@ -21,6 +21,10 @@ public class RabbitMQListener {
     public void listen(Message message, String listenEvent) {
         String messageType = message.getMessageProperties().getHeader("MessageType");
         System.out.println("Received event: " + messageType + " (" + listenEvent + ")");
-        listenEventFactory.execute(messageType, listenEvent);
+        try {
+            listenEventFactory.execute(messageType, listenEvent);
+        } catch (Exception e) {
+            System.out.println("Execute " + messageType + "event failed");
+        }
     }
 }

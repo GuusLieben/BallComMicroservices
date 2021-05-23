@@ -9,5 +9,4 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Customer {
     private UUID customerId;
-    private String event;
 }

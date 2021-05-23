@@ -26,10 +26,12 @@ public class BasketItemAddedListenEvent implements ListenEvent {
     public void execute(ProductRepository productRepository, BasketRepository basketRepository) {
         Basket basket = basketRepository.get(customerId);
         Product product = productRepository.getById(productId);
-        BasketItem basketItem = new BasketItem();
-        basketItem.setAmount(amount);
-        basketItem.setProduct(product);
-        basket.getProducts().add(basketItem);
-        basketRepository.update(basket);
+        if(basket != null && basket.getProducts() != null && product != null) {
+            BasketItem basketItem = new BasketItem();
+            basketItem.setAmount(amount);
+            basketItem.setProduct(product);
+            basket.getProducts().add(basketItem);
+            basketRepository.update(basket);
+        }
     }
 }

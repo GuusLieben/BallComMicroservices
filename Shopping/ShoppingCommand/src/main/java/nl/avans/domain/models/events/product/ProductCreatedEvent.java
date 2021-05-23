@@ -2,7 +2,6 @@ package nl.avans.domain.models.events.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.avans.domain.models.events.Event;
-import nl.avans.domain.models.models.Product;
 
 import java.util.UUID;
 

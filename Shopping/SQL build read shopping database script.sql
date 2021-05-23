@@ -13,13 +13,13 @@ BEGIN
 
 	CREATE TABLE product (
 		[productId] NVARCHAR(50),
-		[data] NVARCHAR(999),
+		[data] NVARCHAR(MAX),
 		CONSTRAINT pk_product PRIMARY KEY ([productId])
 	);
 
 	CREATE TABLE basket (
 		[customerId] NVARCHAR(50),
-		[data] NVARCHAR(999),
+		[data] NVARCHAR(MAX),
 		CONSTRAINT pk_basket PRIMARY KEY ([customerId])
 	);
 END;

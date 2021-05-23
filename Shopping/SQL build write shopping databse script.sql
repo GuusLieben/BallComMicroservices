@@ -15,7 +15,7 @@ BEGIN
 		[productId] NVARCHAR(50),
 		[date] DATETIME2 DEFAULT GETDATE(),
 		[event] NVARCHAR(100),
-		[data] NVARCHAR(999)
+		[data] NVARCHAR(MAX)
 		CONSTRAINT pk_product PRIMARY KEY ([productId], [date])
 	);
 
@@ -23,7 +23,7 @@ BEGIN
 		[customerId] NVARCHAR(50),
 		[date] DATETIME2 DEFAULT GETDATE(),
 		[event] NVARCHAR(100),
-		[data] NVARCHAR(100),
+		[data] NVARCHAR(MAX),
 		CONSTRAINT pk_basket PRIMARY KEY ([customerId], [date])
 	);
 END;

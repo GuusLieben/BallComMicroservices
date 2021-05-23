@@ -13,4 +13,7 @@ public class StockRemovedEvent implements Event {
 
     @JsonProperty
     private UUID productId;
+
+    @JsonProperty
+    private int amount;
 }

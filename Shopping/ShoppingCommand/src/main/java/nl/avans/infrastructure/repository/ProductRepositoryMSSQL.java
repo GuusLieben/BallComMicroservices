@@ -25,7 +25,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
         try {
             Connection connection = connectionDB.connect();
 
-            String sql = "SELECT productId, event, data FROM product WHERE productId = (?) ORDER BY [date] DESC;";
+            String sql = "SELECT productId, event, data FROM product WHERE productId = (?) ORDER BY [date] ASC;";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, id.toString());
             ResultSet dbResult = statement.executeQuery();

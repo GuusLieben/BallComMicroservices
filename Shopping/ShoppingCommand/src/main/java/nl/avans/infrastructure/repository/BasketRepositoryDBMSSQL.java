@@ -23,7 +23,7 @@ public class BasketRepositoryDBMSSQL implements BasketRepository {
         try {
             Connection connection = connectionDB.connect();
 
-            String sql = "SELECT customerId, event, data FROM basket WHERE customerId = (?) ORDER BY [date] DESC;";
+            String sql = "SELECT customerId, event, data FROM basket WHERE customerId = (?) ORDER BY [date] ASC;";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, customerId.toString());
             ResultSet dbResult = statement.executeQuery();

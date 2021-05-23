@@ -101,7 +101,7 @@ public class BasketHandlerCommand implements BasketHandler {
 
         OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(
                 UUID.randomUUID(), order.getCustomerId(), order.getPaymentType(), order.getStreet(), order.getCity(),
-                order.getPostalCode(), order.getHouseNumber(), order.getAddition(), order.getProducts().toArray(new BasketItem[0]));
+                order.getPostalCode(), order.getHouseNumber(), order.getAddition(), order.getProducts());
         try {
             basketEventModel.setData(mapper.writeValueAsString(orderCreatedEvent));
         } catch (JsonProcessingException e) {

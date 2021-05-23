@@ -36,6 +36,8 @@ public class OrderProduct {
     private UUID productId;
     private int amount;
 
+    private double weight;
+
     @ManyToOne
     @JoinColumn(name = "event_id")
     @JsonInclude(Include.NON_NULL)

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -59,7 +58,8 @@ public class OrderCreatedEvent implements Event {
         Shipment shipment = new Shipment();
         shipment.setFirstName(this.getFirstName());
         shipment.setLastName(this.getLastName());
-        shipment.setWeightInKg(new Random().nextInt());
+        final double weight = this.basket.stream().mapToDouble(OrderProduct::getWeight).sum();
+        shipment.setWeightInKg(weight);
         shipment.setCity(this.getCity());
         shipment.setStreet(this.getStreet());
         shipment.setHouseNumber(this.getHouseNumber());

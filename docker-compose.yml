@@ -24,6 +24,7 @@ services:
       - ACCEPT_EULA=Y 
       - MSSQL_PID=Developer
       - SA_PASSWORD=8jkGh47hnDw89Haq8LN2
+    command: /bin/sh -c "(/opt/mssql/bin/sqlservr &) && sleep 10s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 8jkGh47hnDw89Haq8LN2 -d master -Q 'CREATE DATABASE [ballComAuth]; CREATE DATABASE [ballComShipping]; CREATE DATABASE [ballComSupport]' && sleep infinity"
 
   inventoryqueries:
     image: ball/inventoryqueries:1.0

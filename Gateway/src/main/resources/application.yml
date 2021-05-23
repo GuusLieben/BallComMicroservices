@@ -2,25 +2,25 @@ zuul:
   routes:
     auth:
       path: /auth/**
-      url: http://localhost:8081/api/auth
+      url: http://authentication:80/api/auth
     shipment:
       path: /shipments/**
-      url: http://localhost:8082/api/shipments
+      url: http://shipping:80/api/shipments
     shop:
       path: /shop/**
       url: http://localhost:8083/api/shop
     order:
       path: /order/**
-      url: http://localhost:8084/api/order
+      url: http://ballorder:80/api/order
     payment:
       path: /payment/**
-      url: http://localhost:8085/api/payment
+      url: http://paymentAPI:80/api/payment
     inventory:
       path: /product/**
       url: http://localhost:8086/api/product
     support:
       path: /support/**
-      url: http://localhost:8089
+      url: http://support:80
 gateway:
   header:
     token: X-Token
@@ -32,7 +32,7 @@ gateway:
     handlers:
       -
         prefix: support-**
-        url: http://localhost:8089/chat
+        url: http://support:80/chat
   filters:
     # AUTHENTICATION Service
     -

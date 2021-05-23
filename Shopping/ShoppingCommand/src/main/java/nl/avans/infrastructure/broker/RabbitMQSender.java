@@ -8,17 +8,10 @@ import nl.avans.domain.models.events.basket.BasketItemAddedEvent;
 import nl.avans.domain.models.events.basket.BasketItemRemovedEvent;
 import nl.avans.domain.models.events.basket.OrderCreatedEvent;
 import nl.avans.domain.models.events.product.ProductDetailsViewedEvent;
-import nl.avans.domain.models.models.BasketItem;
-import nl.avans.domain.models.models.Order;
 import nl.avans.domain.services.message.BrokerMessageSender;
-import nl.avans.infrastructure.broker.events.send.BasketItemAddedSendEvent;
-import nl.avans.infrastructure.broker.events.send.OrderCreatedSendEvent;
-import nl.avans.infrastructure.broker.events.send.SendEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.UUID;
 
 @Configuration
 @RequiredArgsConstructor

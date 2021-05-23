@@ -7,8 +7,6 @@ import nl.avans.infrastructure.api.models.RemoveBasketIdemViewModel;
 import nl.avans.domain.services.handler.BasketHandler;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RestController

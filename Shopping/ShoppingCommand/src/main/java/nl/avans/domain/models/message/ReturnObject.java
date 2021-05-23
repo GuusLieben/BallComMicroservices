@@ -1,9 +1,11 @@
 package nl.avans.domain.models.message;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class ReturnObject {
+@AllArgsConstructor
+public class ReturnObject<T> {
     private String error;
-    private Object object;
+    private T object;
 }

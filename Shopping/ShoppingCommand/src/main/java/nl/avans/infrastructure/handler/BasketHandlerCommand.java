@@ -9,6 +9,7 @@ import nl.avans.domain.models.events.basket.BasketItemAddedEvent;
 import nl.avans.domain.models.events.basket.BasketItemRemovedEvent;
 import nl.avans.domain.models.events.basket.OrderCreatedEvent;
 import nl.avans.domain.models.events.product.ProductEventModel;
+import nl.avans.domain.models.message.ReturnObject;
 import nl.avans.domain.models.models.Basket;
 import nl.avans.domain.models.models.BasketItem;
 import nl.avans.domain.models.models.Order;
@@ -34,31 +35,51 @@ public class BasketHandlerCommand implements BasketHandler {
     private final AggregateProduct aggregateProduct;
 
     @Override
-    public void addBasketItem(UUID customerId, UUID productId, int amount) {
+    public ReturnObject<Basket> addBasketItem(UUID customerId, UUID productId, int amount) {
         ArrayList<BasketEventModel> events = basketRepository.getById(customerId);
         Basket basket = aggregateBasket.aggregate(events);
 
-        if (basket.getProducts().size() <= 20) {
-            BasketEventModel basketEventModel = new BasketEventModel();
-            basketEventModel.setCustomerId(customerId);
-            basketEventModel.setEvent("BasketItemAdded");
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-            try {
-                basketEventModel.setData(mapper.writeValueAsString(new BasketItemAddedEvent(customerId, productId, amount)));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-            basketRepository.create(basketEventModel);
-            brokerMessageSender.basketItemAdded(new BasketItemAddedEvent(customerId, productId, amount));
+        if (basket.getProducts().size() > 20) {
+            return new ReturnObject<Basket>("Reached the limit of 20 items. You can not add more items to you basket.", null);
         }
+        for (BasketItem searchItem : basket.getProducts()) {
+            if (searchItem.getProduct().getProductId().equals(productId)) {
+                return new ReturnObject<>("Can not add the same item twice." +
+                        " If you want to change your amount please delete the item first and add it afterwards with the adjusted amount.", null);
+            }
+        }
+        BasketEventModel basketEventModel = new BasketEventModel();
+        basketEventModel.setCustomerId(customerId);
+        basketEventModel.setEvent("BasketItemAdded");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        try {
+            basketEventModel.setData(mapper.writeValueAsString(new BasketItemAddedEvent(customerId, productId, amount)));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        basketRepository.create(basketEventModel);
+        brokerMessageSender.basketItemAdded(new BasketItemAddedEvent(customerId, productId, amount));
+        return new ReturnObject<>(null, basket);
     }
 
     @Override
-    public void removeBasketItem(UUID customerId, UUID productId) {
+    public ReturnObject<BasketItem> removeBasketItem(UUID customerId, UUID productId) {
+        ArrayList<BasketEventModel> events = basketRepository.getById(customerId);
+        Basket basket = aggregateBasket.aggregate(events);
+        BasketItem basketItem = null;
+        for (BasketItem searchItem : basket.getProducts()) {
+            if (searchItem.getProduct().getProductId().equals(productId)) {
+                basketItem = searchItem;
+            }
+        }
+        if (basketItem == null) {
+            return new ReturnObject<>("The item you want to delete is currently not in your basket.", null);
+        }
+
         BasketEventModel basketEventModel = new BasketEventModel();
         basketEventModel.setCustomerId(customerId);
         basketEventModel.setEvent("BasketItemRemoved");
@@ -74,12 +95,17 @@ public class BasketHandlerCommand implements BasketHandler {
 
         basketRepository.create(basketEventModel);
         brokerMessageSender.basketItemRemoved(new BasketItemRemovedEvent(customerId, productId));
+        return new ReturnObject<>(null, basketItem);
     }
 
     @Override
-    public void checkout(Order order) {
+    public ReturnObject<Order> checkout(Order order) {
         ArrayList<BasketEventModel> basketEvents = basketRepository.getById(order.getCustomerId());
         Basket basket = aggregateBasket.aggregate(basketEvents);
+
+        if (basket.getProducts() == null || basket.getProducts().size() == 0) {
+            return new ReturnObject<>("There are no items in your basket.", null);
+        }
 
         ArrayList<BasketItem> basketItems = new ArrayList<>();
         for(BasketItem basketItem : basket.getProducts()) {
@@ -110,5 +136,6 @@ public class BasketHandlerCommand implements BasketHandler {
 
         basketRepository.create(basketEventModel);
         brokerMessageSender.orderCreated(orderCreatedEvent);
+        return new ReturnObject<>(null, order);
     }
 }

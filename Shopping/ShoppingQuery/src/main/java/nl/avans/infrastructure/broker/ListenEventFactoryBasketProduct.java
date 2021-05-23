@@ -1,6 +1,7 @@
 package nl.avans.infrastructure.broker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nl.avans.infrastructure.broker.events.ListenEvent;
@@ -23,6 +24,7 @@ public class ListenEventFactoryBasketProduct implements ListenEventFactory {
     public void execute(String type, String listenEvent) {
         ListenEvent event = null;
         ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         try {
             switch (type) {

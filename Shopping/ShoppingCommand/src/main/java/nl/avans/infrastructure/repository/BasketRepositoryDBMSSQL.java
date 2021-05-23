@@ -47,7 +47,7 @@ public class BasketRepositoryDBMSSQL implements BasketRepository {
         try {
             Connection connection = connectionDB.connect();
 
-            String sqlAppend = "INSERT INTO basket ([basketId], [event], [data]) " +
+            String sqlAppend = "INSERT INTO basket ([customerId], [event], [data]) " +
                     "VALUES (?,?,?)";
             PreparedStatement statement = connection.prepareStatement(sqlAppend);
             statement.setString(1, basketEventModel.getCustomerId().toString());

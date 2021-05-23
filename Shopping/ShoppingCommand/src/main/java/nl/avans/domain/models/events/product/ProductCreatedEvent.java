@@ -30,10 +30,4 @@ public class ProductCreatedEvent implements Event {
 
     @JsonProperty
     private String supplierName;
-
-    public Product execute() {
-        Product product = new Product();
-
-        return product;
-    }
 }

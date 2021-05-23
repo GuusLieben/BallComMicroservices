@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nl.avans.domain.models.events.product.ProductEventModel;
+import nl.avans.domain.models.models.Product;
 import nl.avans.domain.services.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class ProductListenFactory implements ProductListener {
             if (events.contains(type)) {
                 ProductEventModel productEventModel = new ProductEventModel();
                 productEventModel.setEvent(type);
-                productEventModel.setProductId(mapper.readValue(payload, ProductEventModel.class).getProductId());
+                productEventModel.setProductId(mapper.readValue(payload, Product.class).getProductId());
                 productEventModel.setData(payload);
                 productRepository.create(productEventModel);
             }

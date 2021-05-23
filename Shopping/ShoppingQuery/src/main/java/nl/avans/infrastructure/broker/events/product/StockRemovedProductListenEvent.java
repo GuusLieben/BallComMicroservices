@@ -4,21 +4,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import nl.avans.domain.models.Product;
 import nl.avans.infrastructure.broker.events.ListenEvent;
+import nl.avans.infrastructure.repository.BasketRepository;
 import nl.avans.infrastructure.repository.ProductRepository;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class ProductDetailsViewedListenEvent implements ListenEvent {
-    private final ProductRepository productRepository;
-
+public class StockRemovedProductListenEvent implements ListenEvent {
     @JsonProperty
     private UUID productId;
 
+    @JsonProperty
+    private int amount;
+
     @Override
-    public void execute() {
+    public void execute(ProductRepository productRepository, BasketRepository basketRepository) {
         Product product = productRepository.getById(productId);
-        product.setDetailsViewed(product.getDetailsViewed() + 1);
+        product.setAmount(product.getAmount() - amount);
         productRepository.update(product);
     }
 }

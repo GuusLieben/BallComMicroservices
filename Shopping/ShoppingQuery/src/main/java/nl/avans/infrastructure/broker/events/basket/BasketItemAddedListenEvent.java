@@ -13,9 +13,6 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class BasketItemAddedListenEvent implements ListenEvent {
-    private final BasketRepository basketRepository;
-    private final ProductRepository productRepository;
-
     @JsonProperty
     private UUID customerId;
 
@@ -26,7 +23,7 @@ public class BasketItemAddedListenEvent implements ListenEvent {
     private int amount;
 
     @Override
-    public void execute() {
+    public void execute(ProductRepository productRepository, BasketRepository basketRepository) {
         Basket basket = basketRepository.get(customerId);
         Product product = productRepository.getById(productId);
         BasketItem basketItem = new BasketItem();

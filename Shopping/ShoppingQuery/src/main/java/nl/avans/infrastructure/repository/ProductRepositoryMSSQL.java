@@ -76,7 +76,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
         try {
             Connection connection = connectionDB.connect();
 
-            String sqlAppend = "INSERT INTO basket ([productId], [data]) " +
+            String sqlAppend = "INSERT INTO product ([productId], [data]) " +
                     "VALUES (?,?)";
             PreparedStatement statement = connection.prepareStatement(sqlAppend);
             statement.setString(1, product.getProductId().toString());

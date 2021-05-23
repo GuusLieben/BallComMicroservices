@@ -5,5 +5,5 @@ COPY . /project
 RUN  cd /project && mvn package
 
 #run the spring boot application
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-jar","/project/target/auth-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-jar","/project/target/names-0.0.1-SNAPSHOT.jar"]
 

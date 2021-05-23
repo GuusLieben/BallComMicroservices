@@ -44,3 +44,4 @@ msbuild.wrn
 **/.mvn
 Gateway/mvnw
 *.cmd
+**/target

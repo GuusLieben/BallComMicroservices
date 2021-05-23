@@ -13,7 +13,6 @@ import com.ball.auth.model.rest.UserCreateModel;
 import com.ball.auth.model.rest.UserPatchModel;
 import com.ball.auth.model.rest.VerifiedModel;
 import com.ball.auth.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Locale;
@@ -160,7 +160,7 @@ public class AuthController {
         try {
             return this.mapper.readValue(payload, new TypeReference<HashMap<String, Object>>() {
             });
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             return new HashMap<>();
         }
     }

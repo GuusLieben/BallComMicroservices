@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{616AA1C5-83F2-4030-9DF3-C496E964C490}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{EB108897-F76F-46C7-B3B7-0DF140BE7B55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{E5E46976-E9BA-4E59-94E5-E6A40F11B954}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{616AA1C5-83F2-4030-9DF3-C496E964C490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{616AA1C5-83F2-4030-9DF3-C496E964C490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{616AA1C5-83F2-4030-9DF3-C496E964C490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{616AA1C5-83F2-4030-9DF3-C496E964C490}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB108897-F76F-46C7-B3B7-0DF140BE7B55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB108897-F76F-46C7-B3B7-0DF140BE7B55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB108897-F76F-46C7-B3B7-0DF140BE7B55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB108897-F76F-46C7-B3B7-0DF140BE7B55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5E46976-E9BA-4E59-94E5-E6A40F11B954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5E46976-E9BA-4E59-94E5-E6A40F11B954}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5E46976-E9BA-4E59-94E5-E6A40F11B954}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5E46976-E9BA-4E59-94E5-E6A40F11B954}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B7EFD8B-E8A5-4057-96B3-7E7F54174146}
+	EndGlobalSection
+EndGlobal

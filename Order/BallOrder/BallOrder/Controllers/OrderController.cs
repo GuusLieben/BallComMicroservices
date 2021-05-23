@@ -30,13 +30,13 @@ namespace BallOrder.Controllers
         }
 
         [HttpGet("{orderId}")]
-        public async Task<IActionResult> GetByCustomerId(Guid orderId)
+        public async Task<IActionResult> GetByOrderId(Guid orderId)
         {
             return Ok(await _orderReadOrderRepository.GetOrderById(orderId));
         }
 
         [HttpPut("{orderId}")]
-        public async Task<IActionResult> PickingFinished(Guid orderId, PickingFinished command)
+        public async Task<IActionResult> PickingFinished(Guid orderId, [FromBody] PickingFinished command)
         {
             OrderState orderState = _orderEventReplayer.GetOrderStatus(DateTime.UtcNow, orderId);
 
@@ -47,8 +47,10 @@ namespace BallOrder.Controllers
 
             OrderPicked orderPicked = new OrderPicked(command);
 
-            await _messagePublisher.PublishMessageAsync(orderPicked);
+            await _orderReadOrderRepository.UpdateOrderStatus(orderPicked.OrderId, orderPicked.OrderState);
+            
             await _orderWriteRepository.AddEventLog(orderPicked);
+            await _messagePublisher.PublishMessageAsync(orderPicked);
 
             return Ok(command);
         }

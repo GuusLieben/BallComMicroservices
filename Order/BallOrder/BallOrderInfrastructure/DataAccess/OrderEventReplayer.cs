@@ -26,11 +26,15 @@ namespace BallOrderInfrastructure.DataAccess
             IEnumerable<IEvent> events = _db.EventLog
                 .Where(evt => evt.OnDateCreated <= utcTime && evt.OrderId.Equals(orderId))
                 .OrderBy(evt => evt.OnDateCreated)
-                .Select(evt => DeserializeToEvent(evt));
+                .Select(evt => DeserializeToEvent(evt)).ToList();
 
             OrderState orderState = 0;
             foreach (IEvent evt in events)
             {
+                if (evt == null)
+                {
+                    continue;
+                }
                 switch (evt.EventName)
                 {
                     case "OrderSetReadyForPicking":
@@ -60,6 +64,10 @@ namespace BallOrderInfrastructure.DataAccess
 
             foreach (IEvent evt in events)
             {
+                if (evt == null)
+                {
+                    continue;
+                }
                 if (!orders.ContainsKey(evt.OrderId))
                 {
                     orders.Add(evt.OrderId, 0);
@@ -91,6 +99,10 @@ namespace BallOrderInfrastructure.DataAccess
             
             foreach (IEvent evt in events)
             {
+                if (evt == null)
+                {
+                    continue;
+                }
                 if (!products.ContainsKey(evt.ProductId))
                 {
                     products.Add(evt.ProductId, 0);
@@ -122,13 +134,15 @@ namespace BallOrderInfrastructure.DataAccess
 
         private static IEvent DeserializeToEvent(EventLog log)
         {
-            return log.EventName switch
+            IEvent evt = log.EventName switch
             {
-                "OrderPicked" => JsonConvert.DeserializeObject<OrderPicked>(log.EventJson),
+                "OrderSetReadyForPicking" => JsonConvert.DeserializeObject<OrderSetReadyForPicking>(log.EventJson),
                 "StockClaimed" => JsonConvert.DeserializeObject<StockClaimed>(log.EventJson),
                 "OutOfStock" => JsonConvert.DeserializeObject<OutOfStock>(log.EventJson),
                 _ => null,
             };
+
+            return evt;
         }
     }
 }

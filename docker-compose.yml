@@ -48,6 +48,18 @@ services:
       - DOTNET_ENVIRONMENT=Production
     ports:
       - "8087:80"
+      
+  ballorder:
+    image: ball/ballorder:1.0
+    build: Order/BallOrder
+    container_name: ballorder
+    depends_on:
+      - rabbitmq
+      - sqlserver
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+    ports:
+      - "8084:80"
 
 
 

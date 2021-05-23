@@ -77,9 +77,6 @@ namespace BallOrderInfrastructure.RabbitMQ
                     case "PaymentApproved":
                         await HandleAsync(messageObject.ToObject<PaymentApproved>());
                         break;
-                    case "OrderPutOnHold":
-                        await HandleAsync(messageObject.ToObject<OrderPutOnHold>());
-                        break;
                     case "StockClaimed":
                         await HandleAsync(messageObject.ToObject<StockClaimed>());
                         break;
@@ -87,7 +84,7 @@ namespace BallOrderInfrastructure.RabbitMQ
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return false;
             }
@@ -180,6 +177,8 @@ namespace BallOrderInfrastructure.RabbitMQ
             await _orderReadOrderRepository.UpdateOrderStatus(orderPutOnHold.OrderId, orderPutOnHold.OrderState);
 
             await _orderWriteRepository.AddEventLog(orderPutOnHold);
+
+            await _messagePublisher.PublishMessageAsync(orderPutOnHold);
         }
 
         private async Task HandleAsync(OrderCreated evt)
@@ -219,11 +218,7 @@ namespace BallOrderInfrastructure.RabbitMQ
             await _orderReadOrderRepository.UpdateOrderStatus(orderSetReadyForPicking.OrderId,
                 orderSetReadyForPicking.OrderState);
             await _orderWriteRepository.AddEventLog(orderSetReadyForPicking);
-        }
-
-        private Task HandleAsync(OrderPutOnHold evt)
-        {
-            return Task.CompletedTask;
+            await _messagePublisher.PublishMessageAsync(orderSetReadyForPicking);
         }
 
         private async Task HandleAsync(StockClaimed evt)

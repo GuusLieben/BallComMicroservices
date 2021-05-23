@@ -20,7 +20,7 @@ zuul:
       url: http://localhost:8086/api/product
     support:
       path: /support/**
-      url: http://localhost:8087
+      url: http://localhost:8089
 gateway:
   header:
     token: X-Token
@@ -32,7 +32,7 @@ gateway:
     handlers:
       -
         prefix: support-**
-        url: http://localhost:8087/chat
+        url: http://localhost:8089/chat
   filters:
     # AUTHENTICATION Service
     -
@@ -88,3 +88,5 @@ gateway:
       path: /api/payment/**
       roles:
         - EMPLOYEE
+server:
+  port: 80

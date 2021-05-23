@@ -50,7 +50,7 @@ public class OrderCreatedEvent implements Event {
     private String firstName;
     private String lastName;
 
-    @OneToMany(mappedBy = "basket")
+    @OneToMany(mappedBy = "event")
     @JsonInclude(Include.NON_NULL)
     private List<OrderProduct> basket;
 

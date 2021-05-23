@@ -73,6 +73,50 @@ services:
     ports:
        - "8085:80"
 
+  authentication:
+    image: ball/authentication:1.0
+    build: Authentication
+    container_name: authentication
+    depends_on:
+      - rabbitmq
+      - sqlserver
+    ports:
+      - "8081:80"
+
+  gateway:
+    image: ball/gateway:1.0
+    build: Gateway
+    container_name: gateway
+    ports:
+      - "80:80"
+
+  names:
+    image: ball/names:1.0
+    build: NameService
+    container_name: names
+    ports:
+      - "8088:80"
+
+  shipping:
+    image: ball/shipping:1.0
+    build: Shipping
+    container_name: shipping
+    depends_on:
+      - rabbitmq
+      - sqlserver
+    ports:
+      - "8082:80"
+
+  support:
+    image: ball/support:1.0
+    build: Support
+    container_name: support
+    depends_on:
+      - rabbitmq
+      - sqlserver
+    ports:
+      - "8089:80"
+
 
 volumes:
   sqlserverdata:

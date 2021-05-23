@@ -1,0 +1,56 @@
+version: '3'
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    
+  sqlserver:
+    image: microsoft/mssql-server-linux:latest
+    container_name: sqlserver
+    volumes:
+      - sqlserverdata:/var/opt/mssql 
+    ports:
+      - "1434:1433"
+    environment:
+      - ACCEPT_EULA=Y 
+      - MSSQL_PID=Developer
+      - SA_PASSWORD=8jkGh47hnDw89Haq8LN2
+
+  inventoryqueries:
+    image: ball/inventoryqueries:1.0
+    build: InventoryQueries
+    container_name: inventoryqueries
+    depends_on:
+      - rabbitmq
+      - sqlserver
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+    ports:
+      - "8086:80"
+  
+  inventorycommands:
+    image: ball/inventorycommands:1.0
+    build: InventoryCommands
+    container_name: inventorycommands
+    depends_on:
+      - rabbitmq
+      - sqlserver
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+    ports:
+      - "8087:80"
+
+
+
+volumes:
+  sqlserverdata:
+  rabbitmqdata:

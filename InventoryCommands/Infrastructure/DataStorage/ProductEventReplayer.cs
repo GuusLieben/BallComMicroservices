@@ -31,6 +31,9 @@ namespace Infrastructure.Services
 			int amount = 0;
 			foreach(IEvent evt in events)
 			{
+				if (evt == null)
+					continue;
+
 				switch (evt.EventName)
 				{
 					case "ProductCreated":

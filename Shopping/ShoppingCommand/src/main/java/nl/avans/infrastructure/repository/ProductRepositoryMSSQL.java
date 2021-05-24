@@ -41,7 +41,8 @@ public class ProductRepositoryMSSQL implements ProductRepository {
             }
             connection.close();
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Error");
+            System.out.println(e.getMessage());
+            System.out.println("Error getById ProductRepositoryMSSQL");
             e.printStackTrace();
         }
         return ProductEventModels;
@@ -62,7 +63,8 @@ public class ProductRepositoryMSSQL implements ProductRepository {
             statement.execute();
             connection.close();
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Error");
+            System.out.println(e.getMessage());
+            System.out.println("Error create ProductRepositoryMSSQL");
             e.printStackTrace();
         }
     }

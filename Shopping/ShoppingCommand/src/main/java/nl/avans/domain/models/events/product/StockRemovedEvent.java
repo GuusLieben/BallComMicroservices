@@ -13,9 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class StockRemovedEvent implements Event {
     @JsonProperty
-    private UUID customerId;
-
-    @JsonProperty
     private UUID productId;
 
     @JsonProperty

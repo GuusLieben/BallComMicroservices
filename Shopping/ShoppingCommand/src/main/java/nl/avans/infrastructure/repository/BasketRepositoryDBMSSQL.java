@@ -38,7 +38,8 @@ public class BasketRepositoryDBMSSQL implements BasketRepository {
             }
             connection.close();
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Error");
+            System.out.println(e.getMessage());
+            System.out.println("Error getById BasketRepositoryDBMSSQL");
             e.printStackTrace();
         }
         return basketEventModels;
@@ -59,7 +60,8 @@ public class BasketRepositoryDBMSSQL implements BasketRepository {
             statement.execute();
             connection.close();
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Error");
+            System.out.println(e.getMessage());
+            System.out.println("Error create BasketRepositoryDBMSSQL");
             e.printStackTrace();
         }
     }

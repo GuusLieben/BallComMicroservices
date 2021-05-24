@@ -15,9 +15,15 @@ zuul:
     payment:
       path: /payment/**
       url: http://paymentAPI:80/api/payment
-    inventory:
-      path: /product/**
-      url: http://localhost:8086/api/product
+    inventoryqueries:
+      path: /product
+      url: http://inventoryqueries/api/product
+    inventorycommandsinternal:
+      path: /product/internal/**
+      url: http://inventorycommands/api/product/internal
+    inventorycommandssupplier:
+      path: /product/supplier/**
+      url: http://inventorycommands/api/product/supplier
     support:
       path: /support/**
       url: http://support:80
@@ -63,6 +69,11 @@ gateway:
       roles:
         - EMPLOYEE
     # INVENTORY Service
+    -
+      path: /product
+      method: GET
+      roles:
+        - EMPLOYEE
     -
       path: /product/internal
       method: POST

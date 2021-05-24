@@ -41,7 +41,7 @@ function connect(event) {
         chatPage.classList.remove('hidden');
 
         // TODO: Make socket destination dynamic
-        var socket = new SockJS('http://localhost:8080/websocket');
+        var socket = new SockJS('http://gateway/websocket');
         stompClient = Stomp.over(socket);
 
         stompClient.connect({}, onConnected, onError);

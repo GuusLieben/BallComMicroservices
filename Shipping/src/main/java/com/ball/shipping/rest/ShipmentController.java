@@ -39,16 +39,11 @@ public class ShipmentController {
         Optional<Shipment> lookup = this.shipments.findById(id);
         if (lookup.isPresent()) {
             Shipment shipment = lookup.get();
-            if (update.getState() == ShipmentState.REGISTERED) {
-                return shipment;
-            }
-            else {
-                shipment.setState(update.getState());
-                Shipment savedShipment = this.shipments.save(shipment);
-                savedShipment.getState().perform(this.sender, savedShipment);
-                savedShipment.getShipper().setShipment(null);
-                return savedShipment;
-            }
+            shipment.setState(update.getState());
+            Shipment savedShipment = this.shipments.save(shipment);
+            savedShipment.getState().perform(this.sender, savedShipment);
+            savedShipment.getShipper().setShipment(null);
+            return savedShipment;
         } else {
             return new ErrorObject(404, "Not found", "Could not find a shipment with id " + id);
         }

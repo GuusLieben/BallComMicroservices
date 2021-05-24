@@ -23,19 +23,16 @@ public class ProductListenFactory implements ProductListener {
 
     @Override
     public void execute(String type, String payload) {
-        System.out.println("EXECUTING");
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         try {
             Set<String> events = Set.of("ProductCreated", "StockAdded", "StockRemoved");
             if (events.contains(type)) {
-                System.out.println("EVENT");
                 ProductEventModel productEventModel = new ProductEventModel();
                 productEventModel.setEvent(type);
                 switch (type) {
                     case "ProductCreated":
-                        System.out.println("PCREATED");
                         ProductCreatedEvent productCreatedEvent = mapper.readValue(payload, ProductCreatedEvent.class);
                         productEventModel.setProductId(productCreatedEvent.getProductId());
                         productEventModel.setData(mapper.writeValueAsString(productCreatedEvent));

@@ -26,7 +26,6 @@ public class RabbitMQListener {
         String messageType = message.getMessageProperties().getHeader("MessageType");
         System.out.println("Received event: " + messageType + " (" + listenEvent + ")");
         try {
-            System.out.println("JEMOEDER");
             productListener.execute(messageType, listenEvent);
             basketListener.execute(messageType, listenEvent);
         } catch (Exception e) {

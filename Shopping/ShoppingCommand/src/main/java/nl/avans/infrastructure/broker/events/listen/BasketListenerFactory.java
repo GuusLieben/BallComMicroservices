@@ -33,7 +33,7 @@ public class BasketListenerFactory implements BasketListener {
                 basketEventModel.setEvent(type);
                 CustomerAddedEvent customerAddedEvent = mapper.readValue(payload, CustomerAddedEvent.class);
                 customerAddedEvent.setProducts(new ArrayList<BasketItem>());
-                basketEventModel.setCustomerId(customerAddedEvent.getCustomerId());
+                basketEventModel.setCustomerId(customerAddedEvent.getGuid());
                 basketEventModel.setData(mapper.writeValueAsString(customerAddedEvent));
                 basketRepository.create(basketEventModel);
             }

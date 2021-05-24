@@ -30,7 +30,7 @@ public class AggregateBasketEvents implements AggregateBasket {
                     case "CustomerAdded":
                         CustomerAddedEvent customerAddedEvent = mapper.readValue(event.getData(), CustomerAddedEvent.class);
                         Customer customer = new Customer();
-                        customer.setCustomerId(customerAddedEvent.getCustomerId());
+                        customer.setCustomerId(customerAddedEvent.getGuid());
                         basket.setCustomer(customer);
                         basket.setProducts(new ArrayList<BasketItem>());
                         break;

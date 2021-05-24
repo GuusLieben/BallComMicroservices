@@ -18,7 +18,7 @@ import java.util.UUID;
 public class ProductController {
     private final ProductHandler productHandler;
 
-    @PostMapping("/product/{productId}/detailsViewed")
+    @PostMapping("/products/{productId}/detailsViewed")
     public ResponseEntity<String> detailsViewed(@PathVariable("productId") UUID productId) {
         ReturnObject returnObject = productHandler.upDetailsViewed(productId);
         if (returnObject.getError() != null) {

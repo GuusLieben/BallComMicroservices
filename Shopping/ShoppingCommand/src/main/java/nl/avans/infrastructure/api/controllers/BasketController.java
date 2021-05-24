@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class BasketController {
     private final BasketHandler basketHandler;
 
-    @PostMapping("/basket")
+    @PostMapping("/baskets")
     public ResponseEntity<String> post(@RequestBody AddBasketItemViewModel viewModel) {
         ReturnObject returnObject = basketHandler.addBasketItem(viewModel.getCustomerId(), viewModel.getProductId(), viewModel.getAmount());
         if (returnObject.getError() != null) {
@@ -25,7 +25,7 @@ public class BasketController {
         return ResponseEntity.ok("Success");
     }
 
-    @DeleteMapping("/basket")
+    @DeleteMapping("/baskets")
     public ResponseEntity<String> delete(@RequestBody RemoveBasketIdemViewModel viewModel) {
         ReturnObject returnObject = basketHandler.removeBasketItem(viewModel.getCustomerId(), viewModel.getProductId());
         if (returnObject.getError() != null) {
@@ -34,7 +34,7 @@ public class BasketController {
         return ResponseEntity.ok("Success");
     }
 
-    @PostMapping("/basket/checkout")
+    @PostMapping("/baskets/checkout")
     public ResponseEntity<String> checkout(@RequestBody Order order) {
         ReturnObject returnObject = basketHandler.checkout(order);
         if (returnObject.getError() != null) {

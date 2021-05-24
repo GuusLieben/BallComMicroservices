@@ -44,8 +44,8 @@ public class OrderCreatedEvent implements Event {
     private String city;
     private String street;
     private short houseNumber;
-    private String addition;
-    private String postalCode;
+    private String additional;
+    private String postCode;
 
     private String firstName;
     private String lastName;
@@ -63,8 +63,8 @@ public class OrderCreatedEvent implements Event {
         shipment.setCity(this.getCity());
         shipment.setStreet(this.getStreet());
         shipment.setHouseNumber(this.getHouseNumber());
-        shipment.setAddition(this.getAddition());
-        shipment.setPostalCode(this.getPostalCode());
+        shipment.setAddition(this.getAdditional());
+        shipment.setPostalCode(this.getPostCode());
         return shipment;
     }
 }

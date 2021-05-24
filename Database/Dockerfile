@@ -6,6 +6,7 @@ RUN apt-get install mssql-tools
 RUN ln -sfn /opt/mssql-tools/bin/sqlcmd /usr/bin/sqlcmd
 
 COPY ./create-db.sql /
+COPY ./populate-db.sql /
 COPY ./entrypoint.sh /
 
 ENTRYPOINT [ "/bin/bash", "entrypoint.sh" ]

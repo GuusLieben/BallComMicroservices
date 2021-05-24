@@ -11,7 +11,7 @@ namespace BallOrder.Models
         public Guid OrderId { get; set; }
         public Guid CustomerId { get; set; }
         public OrderState OrderState { get; set; }
-        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
+        public IEnumerable<OrderProduct> OrderProducts { get; set; }
 
         public Order()
         {

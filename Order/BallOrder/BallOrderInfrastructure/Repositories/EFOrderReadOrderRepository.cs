@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using BallOrder.Models;
 using BallOrderDomain.Services;
@@ -23,7 +24,14 @@ namespace BallOrderInfrastructure.Repositories
 
         public async Task<Order> GetOrderById(Guid orderId)
         {
-            return await _dbContext.Orders.Include(order => order.OrderProducts).ThenInclude(orderProducts => orderProducts.Product).FirstAsync(order => order.OrderId == orderId);
+            Order order = await _dbContext.Orders.FindAsync(orderId);
+            order.OrderProducts = _dbContext.OrderProducts.Where(op => op.OrderId == orderId);
+            foreach (OrderProduct op in order.OrderProducts)
+            {
+                op.Product = await _dbContext.Products.FindAsync(op.ProductId);
+            }
+
+            return order;
         }
 
         public async Task UpdateOrderStatus(Guid orderId, OrderState orderState)

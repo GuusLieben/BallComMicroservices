@@ -23,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(originPatterns = "**", allowCredentials = "false")
 @Controller
 public class WebSocketController {
 

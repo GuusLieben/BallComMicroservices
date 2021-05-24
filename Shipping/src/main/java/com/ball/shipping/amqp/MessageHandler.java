@@ -2,7 +2,6 @@ package com.ball.shipping.amqp;
 
 import com.ball.shipping.model.amqp.Event;
 import com.ball.shipping.model.amqp.order.OrderCreatedEvent;
-import com.ball.shipping.model.amqp.shipment.ShipmentRegisteredEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.BeanFactory;
@@ -13,8 +12,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 public enum MessageHandler {
-    SHIPMENT_REGISTERED(ShipmentRegisteredEvent.class, EventHandler.class, EventHandler::registered,
-            "ShipmentRegistered"),
     ORDER_CREATED(OrderCreatedEvent.class, EventHandler.class, EventHandler::created,
             "OrderCreated"),
     ORDER_CREATED_EVENT(OrderCreatedEvent.class, OrderEventHandler.class, OrderEventHandler::handle,

@@ -11,14 +11,15 @@ public class ConnectionDBMSSQL implements ConnectionDB {
     public Connection connect() {
         Connection connection = null;
 
-        String url = "jdbc:sqlserver://localhost;databaseName=shopping-writedb";
+        String url = "jdbc:sqlserver://sqlserver;databaseName=shopping-writedb";
         String username = "sa";
-        String password = "password";
+        String password = "8jkGh47hnDw89Haq8LN2";
 
         try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(url, username, password);
             System.out.println("Connected to SQL server");
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Connection while connecting");
             e.printStackTrace();
         }

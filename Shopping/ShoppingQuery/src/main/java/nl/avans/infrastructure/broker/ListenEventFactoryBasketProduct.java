@@ -54,6 +54,8 @@ public class ListenEventFactoryBasketProduct implements ListenEventFactory {
                     break;
             }
         } catch (JsonProcessingException e) {
+            System.out.println("Error execute ListenEventFactoryBasketProduct");
+            System.out.println(e.getMessage());
             System.out.println(e.getMessage());
         }
 

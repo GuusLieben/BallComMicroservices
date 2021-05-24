@@ -12,6 +12,7 @@ import nl.avans.domain.models.models.Product;
 import nl.avans.domain.services.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.Set;
 
 @Service
@@ -48,6 +49,8 @@ public class ProductListenFactory implements ProductListener {
                 productRepository.create(productEventModel);
             }
         } catch (JsonProcessingException e) {
+            System.out.println("Error ProductListenFactory BasketListenerFactory");
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }

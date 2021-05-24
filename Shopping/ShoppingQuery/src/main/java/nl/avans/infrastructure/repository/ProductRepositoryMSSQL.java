@@ -25,6 +25,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
     public ArrayList<Product> get() {
         ArrayList<Product> products = new ArrayList();
         try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection connection = connectionDB.connect();
             String sql = "SELECT data FROM product;";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -36,11 +37,20 @@ public class ProductRepositoryMSSQL implements ProductRepository {
             }
             connection.close();
         } catch (SQLException e) {
-            System.out.println("Error");
+            System.out.println(e.getMessage());
+            System.out.println("Error get ProductRepositoryMSSQL");
             e.printStackTrace();
         } catch (JsonMappingException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error get ProductRepositoryMSSQL");
             e.printStackTrace();
         } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error get ProductRepositoryMSSQL");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error get ProductRepositoryMSSQL");
             e.printStackTrace();
         }
         return products;
@@ -50,6 +60,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
     public Product getById(UUID productId) {
         Product product = new Product();
         try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection connection = connectionDB.connect();
             String sql = "SELECT data FROM product WHERE productId = ?;";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -61,11 +72,20 @@ public class ProductRepositoryMSSQL implements ProductRepository {
             }
             connection.close();
         } catch (SQLException e) {
-            System.out.println("Error");
+            System.out.println(e.getMessage());
+            System.out.println("Error getById ProductRepositoryMSSQL");
             e.printStackTrace();
         } catch (JsonMappingException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error getById ProductRepositoryMSSQL");
             e.printStackTrace();
         } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error getById ProductRepositoryMSSQL");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error getById ProductRepositoryMSSQL");
             e.printStackTrace();
         }
         return product;
@@ -74,6 +94,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
     @Override
     public void create(Product product) {
         try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection connection = connectionDB.connect();
 
             String sqlAppend = "INSERT INTO product ([productId], [data]) " +
@@ -85,9 +106,16 @@ public class ProductRepositoryMSSQL implements ProductRepository {
             statement.execute();
             connection.close();
         } catch (SQLException e) {
-            System.out.println("Error");
+            System.out.println(e.getMessage());
+            System.out.println("Error create ProductRepositoryMSSQL");
             e.printStackTrace();
         } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error create ProductRepositoryMSSQL");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error create ProductRepositoryMSSQL");
             e.printStackTrace();
         }
     }
@@ -95,6 +123,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
     @Override
     public void update(Product product) {
         try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection connection = connectionDB.connect();
 
             String sqlAppend = "UPDATE product SET data = ? WHERE productId = ?;";
@@ -105,9 +134,16 @@ public class ProductRepositoryMSSQL implements ProductRepository {
             statement.executeUpdate();
             connection.close();
         } catch (SQLException e) {
-            System.out.println("Error");
+            System.out.println(e.getMessage());
+            System.out.println("Error update ProductRepositoryMSSQL");
             e.printStackTrace();
         } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error update ProductRepositoryMSSQL");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error update ProductRepositoryMSSQL");
             e.printStackTrace();
         }
     }

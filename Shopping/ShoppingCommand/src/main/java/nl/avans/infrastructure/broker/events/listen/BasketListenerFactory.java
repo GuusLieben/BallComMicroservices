@@ -34,6 +34,8 @@ public class BasketListenerFactory implements BasketListener {
                 basketRepository.create(basketEventModel);
             }
         } catch (JsonProcessingException e) {
+            System.out.println("Error execute BasketListenerFactory");
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }

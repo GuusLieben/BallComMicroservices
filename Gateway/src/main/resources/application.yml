@@ -16,8 +16,8 @@ zuul:
       path: /payment/**
       url: http://paymentAPI:80/api/payment
     inventoryqueries:
-      path: /product
       url: http://inventoryqueries/api/product
+      path: /product/**
     inventorycommandsinternal:
       path: /product/internal/**
       url: http://inventorycommands/api/product/internal
@@ -42,7 +42,7 @@ gateway:
   filters:
     # AUTHENTICATION Service
     -
-      path: /auth/**
+      path: /auth/user
       roles:
         - EMPLOYEE
         - CUSTOMER

@@ -25,12 +25,6 @@ namespace BallOrderInfrastructure.Repositories
         public async Task<Order> GetOrderById(Guid orderId)
         {
             Order order = await _dbContext.Orders.FindAsync(orderId);
-            order.OrderProducts = _dbContext.OrderProducts.Where(op => op.OrderId == orderId);
-            foreach (OrderProduct op in order.OrderProducts)
-            {
-                op.Product = await _dbContext.Products.FindAsync(op.ProductId);
-            }
-
             return order;
         }
 

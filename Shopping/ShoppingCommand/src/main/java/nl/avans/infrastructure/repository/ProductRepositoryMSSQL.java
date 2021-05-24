@@ -1,9 +1,7 @@
 package nl.avans.infrastructure.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import nl.avans.domain.models.events.product.ProductEventModel;
-import nl.avans.domain.services.repository.ProductRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -12,6 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
+import nl.avans.domain.models.events.product.ProductEventModel;
+import nl.avans.domain.services.repository.ProductRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
     public ArrayList<ProductEventModel> getById(UUID id) {
         ArrayList<ProductEventModel> ProductEventModels = new ArrayList<>();
         try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection connection = connectionDB.connect();
 
             String sql = "SELECT productId, event, data FROM product WHERE productId = (?) ORDER BY [date] ASC;";
@@ -37,7 +40,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
                 ProductEventModels.add(productEventModel);
             }
             connection.close();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Error");
             e.printStackTrace();
         }
@@ -47,6 +50,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
     @Override
     public void create(ProductEventModel eventModel) {
         try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection connection = connectionDB.connect();
 
             String sqlAppend = "INSERT INTO product ([productId], [event], [data]) " +
@@ -57,7 +61,7 @@ public class ProductRepositoryMSSQL implements ProductRepository {
             statement.setString(3, eventModel.getData());
             statement.execute();
             connection.close();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Error");
             e.printStackTrace();
         }

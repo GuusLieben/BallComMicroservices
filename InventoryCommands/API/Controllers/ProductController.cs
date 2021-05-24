@@ -47,7 +47,7 @@ namespace API.Controllers
 			if (!success)
 				return StatusCode(500, err);
 
-			if (!payload.Meta.TryGetValue("company", out object nameObj))
+			if (string.IsNullOrEmpty(payload.Company)
 				return StatusCode(500, "No company name found in supplier meta data");
 
 			product.Supplier = nameObj.ToString();
@@ -83,7 +83,7 @@ namespace API.Controllers
 			if (!success)
 				return StatusCode(500, err);
 
-			if (!payload.Meta.TryGetValue("company", out object nameObj))
+			if(string.IsNullOrEmpty(payload.Company)
 				return StatusCode(500, "No company name found in supplier meta data");
 
 			(bool productFound, int currentAmount) = _productReplayer.GetProductAmountOn(DateTime.UtcNow, productId, nameObj.ToString());

@@ -7,6 +7,7 @@ namespace AppServices
 	{
 		public Guid Guid { get; set; }
 		public string Email { get; set; }
+		public string Company { get; set;}
 		public Dictionary<string, object> Meta { get; set; }
 	}
 }

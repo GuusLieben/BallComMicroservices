@@ -118,6 +118,29 @@ services:
     ports:
       - "8089:80"
 
+  shoppingyqueries:
+    image: ball/shoppingyqueries:1.0
+    build: Shopping/ShoppingQuery
+    container_name: shoppingqueries
+    depends_on:
+      - rabbitmq
+      - sqlserver
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+    ports:
+      - "8090:80"
+  
+  shoppingcommands:
+    image: ball/shoppingcommands:1.0
+    build: Shopping/ShoppingCommand
+    container_name: shoppingcommands
+    depends_on:
+      - rabbitmq
+      - sqlserver
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+    ports:
+      - "8083:80"
 
 volumes:
   sqlserverdata:

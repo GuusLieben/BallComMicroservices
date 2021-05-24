@@ -37,7 +37,7 @@ namespace Infrastructure.RabbitMQ
 
 			Policy
 				.Handle<Exception>()
-				.WaitAndRetry(9, r => TimeSpan.FromSeconds(5))
+				.WaitAndRetry(20, r => TimeSpan.FromSeconds(10))
 				.Execute(() =>
 				{
 					ConnectionFactory factory = new ConnectionFactory() { HostName = _host, UserName = _username, Password = _password, DispatchConsumersAsync = true };

@@ -40,7 +40,7 @@ namespace PaymentInfrastructure.RabbitMQ
 
 			Policy
 				.Handle<Exception>()
-				.WaitAndRetry(9, r => TimeSpan.FromSeconds(5))
+				.WaitAndRetry(30, r => TimeSpan.FromSeconds(10))
 				.Execute(() =>
 				{
 					ConnectionFactory factory = new ConnectionFactory() { HostName = _host, UserName = _username, Password = _password, DispatchConsumersAsync = true };

@@ -38,7 +38,7 @@ namespace Infrastructure.RabbitMQ
 
 			Policy
 				.Handle<Exception>()
-				.WaitAndRetry(9, r => TimeSpan.FromSeconds(5), (ex, ts) => { Debug.WriteLine("Error connecting to RabbitMQ. Retrying in 5 sec."); })
+				.WaitAndRetry(20, r => TimeSpan.FromSeconds(10), (ex, ts) => { Debug.WriteLine("Error connecting to RabbitMQ. Retrying in 5 sec."); })
 				.Execute(() =>
 				{
 					ConnectionFactory factory = new ConnectionFactory() { HostName = _host, UserName = _username, Password = _password, DispatchConsumersAsync = true };

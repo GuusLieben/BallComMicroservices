@@ -6,11 +6,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nl.avans.domain.models.events.product.ProductDetailsViewedEvent;
 import nl.avans.domain.models.events.product.ProductEventModel;
+import nl.avans.domain.models.message.ReturnObject;
+import nl.avans.domain.models.models.Product;
+import nl.avans.domain.services.aggregate.AggregateProduct;
 import nl.avans.domain.services.handler.ProductHandler;
 import nl.avans.domain.services.message.BrokerMessageSender;
 import nl.avans.domain.services.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -18,9 +22,16 @@ import java.util.UUID;
 public class ProductHandlerCommand implements ProductHandler {
     private final ProductRepository productRepository;
     private final BrokerMessageSender brokerMessageSender;
+    private final AggregateProduct aggregateProduct;
 
     @Override
-    public void upDetailsViewed(UUID productId) {
+    public ReturnObject<Product> upDetailsViewed(UUID productId) {
+        ArrayList<ProductEventModel> productEvents = productRepository.getById(productId);
+        if (productEvents == null || productEvents.size() == 0) {
+            return new ReturnObject<Product>("Product not found.", null);
+        }
+        Product product = aggregateProduct.aggregate(productEvents);
+
         ProductEventModel productEventModel = new ProductEventModel();
         productEventModel.setProductId(productId);
         productEventModel.setEvent("ProductDetailsViewed");
@@ -36,5 +47,6 @@ public class ProductHandlerCommand implements ProductHandler {
 
         productRepository.create(productEventModel);
         brokerMessageSender.productDetailsViewed(new ProductDetailsViewedEvent(productId));
+        return new ReturnObject<>(null, product);
     }
 }

@@ -8,6 +8,7 @@ import nl.avans.domain.models.events.basket.BasketEventModel;
 import nl.avans.domain.models.events.basket.BasketItemAddedEvent;
 import nl.avans.domain.models.events.basket.BasketItemRemovedEvent;
 import nl.avans.domain.models.events.basket.OrderCreatedEvent;
+import nl.avans.domain.models.events.product.ProductCreatedEvent;
 import nl.avans.domain.models.events.product.ProductEventModel;
 import nl.avans.domain.models.message.ReturnObject;
 import nl.avans.domain.models.models.Basket;
@@ -36,6 +37,11 @@ public class BasketHandlerCommand implements BasketHandler {
 
     @Override
     public ReturnObject<Basket> addBasketItem(UUID customerId, UUID productId, int amount) {
+        ArrayList<ProductEventModel> productEvents = productRepository.getById(productId);
+        if (productEvents == null || productEvents.size() == 0) {
+            return new ReturnObject<>("Product not found.", null);
+        }
+
         ArrayList<BasketEventModel> events = basketRepository.getById(customerId);
         Basket basket = aggregateBasket.aggregate(events);
 
@@ -68,6 +74,11 @@ public class BasketHandlerCommand implements BasketHandler {
 
     @Override
     public ReturnObject<BasketItem> removeBasketItem(UUID customerId, UUID productId) {
+        ArrayList<ProductEventModel> productEvents = productRepository.getById(productId);
+        if (productEvents == null || productEvents.size() == 0) {
+            return new ReturnObject<>("Product not found.", null);
+        }
+
         ArrayList<BasketEventModel> events = basketRepository.getById(customerId);
         Basket basket = aggregateBasket.aggregate(events);
         BasketItem basketItem = null;

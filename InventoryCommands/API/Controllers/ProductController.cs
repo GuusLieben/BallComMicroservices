@@ -86,7 +86,7 @@ namespace API.Controllers
 			if(string.IsNullOrEmpty(payload.Company))
 				return StatusCode(500, "No company name found in supplier meta data");
 
-			(bool productFound, int currentAmount) = _productReplayer.GetProductAmountOn(DateTime.UtcNow, productId, payload.Company;);
+			(bool productFound, int currentAmount) = _productReplayer.GetProductAmountOn(DateTime.UtcNow, productId, payload.Company);
 			if (!productFound)
 				return UnprocessableEntity($"Could not find a product with ID '{productId}'");
 

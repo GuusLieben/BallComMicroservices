@@ -17,6 +17,10 @@ namespace BallOrderInfrastructure.Repositories
         {
             orderProduct.OrderId = orderProduct.Order.OrderId;
             orderProduct.Order = null;
+
+            orderProduct.ProductId = orderProduct.Product.ProductId;
+            orderProduct.Product = null;
+
             await _dbContext.OrderProducts.AddAsync(orderProduct);
             await _dbContext.SaveChangesAsync();
         }

@@ -15,6 +15,8 @@ namespace BallOrder.Models
         [NotMapped]
         public Order Order { get; set; }
 
+        public Guid ProductId { get; set; }
+        [NotMapped]
         public Product Product { get; set; }
         public int Amount { get; set; }
 

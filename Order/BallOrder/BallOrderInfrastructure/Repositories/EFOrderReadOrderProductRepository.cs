@@ -15,6 +15,8 @@ namespace BallOrderInfrastructure.Repositories
         }
         public async Task AddOrderProduct(OrderProduct orderProduct)
         {
+            orderProduct.OrderId = orderProduct.Order.OrderId;
+            orderProduct.Order = null;
             await _dbContext.OrderProducts.AddAsync(orderProduct);
             await _dbContext.SaveChangesAsync();
         }

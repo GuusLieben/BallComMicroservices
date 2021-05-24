@@ -7,8 +7,11 @@ zuul:
       path: /shipments/**
       url: http://shipping:80/api/shipments
     shop:
-      path: /shop/**
-      url: http://localhost:8083/api/shop
+      path: /shop/product/**
+      url: http://shoppingqueries/api/products
+    shopbasket:
+      path: /shop/basket/**
+      url: http://shoppingcommands/api/baskets
     order:
       path: /order/**
       url: http://ballorder:80/api/order

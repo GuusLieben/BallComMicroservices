@@ -114,7 +114,7 @@ services:
     ports:
       - "8089:80"
 
-  shoppingyqueries:
+  shoppingqueries:
     image: ball/shoppingyqueries:1.0
     build: Shopping/ShoppingQuery
     container_name: shoppingqueries

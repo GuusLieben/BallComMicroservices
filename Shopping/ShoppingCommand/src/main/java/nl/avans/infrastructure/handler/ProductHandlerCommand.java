@@ -2,7 +2,14 @@ package nl.avans.infrastructure.handler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import nl.avans.domain.models.events.product.ProductDetailsViewedEvent;
 import nl.avans.domain.models.events.product.ProductEventModel;
@@ -12,10 +19,6 @@ import nl.avans.domain.services.aggregate.AggregateProduct;
 import nl.avans.domain.services.handler.ProductHandler;
 import nl.avans.domain.services.message.BrokerMessageSender;
 import nl.avans.domain.services.repository.ProductRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +40,7 @@ public class ProductHandlerCommand implements ProductHandler {
         productEventModel.setEvent("ProductDetailsViewed");
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         try {

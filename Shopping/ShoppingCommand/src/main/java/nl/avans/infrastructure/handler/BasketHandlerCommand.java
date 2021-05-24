@@ -2,13 +2,19 @@ package nl.avans.infrastructure.handler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import nl.avans.domain.models.events.basket.BasketEventModel;
 import nl.avans.domain.models.events.basket.BasketItemAddedEvent;
 import nl.avans.domain.models.events.basket.BasketItemRemovedEvent;
 import nl.avans.domain.models.events.basket.OrderCreatedEvent;
-import nl.avans.domain.models.events.product.ProductCreatedEvent;
 import nl.avans.domain.models.events.product.ProductEventModel;
 import nl.avans.domain.models.message.ReturnObject;
 import nl.avans.domain.models.models.Basket;
@@ -21,10 +27,6 @@ import nl.avans.domain.services.handler.BasketHandler;
 import nl.avans.domain.services.message.BrokerMessageSender;
 import nl.avans.domain.services.repository.BasketRepository;
 import nl.avans.domain.services.repository.ProductRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +61,7 @@ public class BasketHandlerCommand implements BasketHandler {
         basketEventModel.setEvent("BasketItemAdded");
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         try {
@@ -96,6 +99,7 @@ public class BasketHandlerCommand implements BasketHandler {
         basketEventModel.setEvent("BasketItemRemoved");
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         try {
@@ -134,6 +138,7 @@ public class BasketHandlerCommand implements BasketHandler {
         basketEventModel.setEvent("OrderCreated");
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(

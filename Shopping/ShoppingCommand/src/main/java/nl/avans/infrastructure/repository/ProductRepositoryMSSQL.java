@@ -1,5 +1,6 @@
 package nl.avans.infrastructure.repository;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ import nl.avans.domain.services.repository.ProductRepository;
 public class ProductRepositoryMSSQL implements ProductRepository {
     private final ConnectionDB connectionDB;
     private ObjectMapper mapper = new ObjectMapper();
+
+    {
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    }
 
     @Override
     public ArrayList<ProductEventModel> getById(UUID id) {
@@ -51,17 +56,23 @@ public class ProductRepositoryMSSQL implements ProductRepository {
     @Override
     public void create(ProductEventModel eventModel) {
         try {
+            System.out.println("CREATING");
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection connection = connectionDB.connect();
 
             String sqlAppend = "INSERT INTO product ([productId], [event], [data]) " +
                     "VALUES (?,?,?)";
+
+            System.out.println(eventModel);
+
             PreparedStatement statement = connection.prepareStatement(sqlAppend);
             statement.setString(1, eventModel.getProductId().toString());
             statement.setString(2, eventModel.getEvent());
             statement.setString(3, eventModel.getData());
             statement.execute();
+            System.out.println("Execute (me pls)");
             connection.close();
+            System.out.println("Closed");
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
             System.out.println("Error create ProductRepositoryMSSQL");

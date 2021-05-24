@@ -3,6 +3,7 @@ package com.ball.gateway.ws;
 import com.ball.gateway.AuthenticationFilter;
 import com.ball.gateway.config.filters.GatewayConfiguration;
 import com.ball.gateway.config.ws.Handler;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -34,6 +35,7 @@ public class WebSocketController {
     public WebSocketController(GatewayConfiguration configuration, RestTemplateBuilder builder) {
         this.configuration = configuration;
         this.templateBuilder = builder;
+        this.mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
     }
 
     @MessageMapping("/chat.register/{topicId}")

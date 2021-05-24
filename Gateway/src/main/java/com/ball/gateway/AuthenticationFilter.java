@@ -3,6 +3,7 @@ package com.ball.gateway;
 import com.ball.gateway.config.filters.GatewayConfiguration;
 import com.ball.gateway.config.filters.Role;
 import com.ball.gateway.config.filters.RoleFilter;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -80,6 +81,7 @@ public class AuthenticationFilter extends ZuulFilter {
         else {
             try {
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
                 String tokenPayload = mapper.writeValueAsString(body.getPayload());
                 ctx.getZuulRequestHeaders().put(this.configuration.getHeader().getPayload(), tokenPayload);
             } catch (Exception e) {

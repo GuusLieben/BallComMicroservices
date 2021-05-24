@@ -2,17 +2,23 @@ package nl.avans.infrastructure.broker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.stereotype.Service;
+
 import lombok.RequiredArgsConstructor;
 import nl.avans.infrastructure.broker.events.ListenEvent;
-import nl.avans.infrastructure.broker.events.basket.*;
+import nl.avans.infrastructure.broker.events.basket.BasketItemAddedListenEvent;
+import nl.avans.infrastructure.broker.events.basket.BasketItemRemovedListenEvent;
+import nl.avans.infrastructure.broker.events.basket.CustomerAddedQueryListenEvent;
+import nl.avans.infrastructure.broker.events.basket.OrderCreatedListenEvent;
 import nl.avans.infrastructure.broker.events.product.ProductCreatedProductListenEvent;
 import nl.avans.infrastructure.broker.events.product.ProductDetailsViewedProductListenEvent;
 import nl.avans.infrastructure.broker.events.product.StockAddedProductListenEvent;
 import nl.avans.infrastructure.broker.events.product.StockRemovedProductListenEvent;
 import nl.avans.infrastructure.repository.BasketRepository;
 import nl.avans.infrastructure.repository.ProductRepository;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +30,7 @@ public class ListenEventFactoryBasketProduct implements ListenEventFactory {
     public void execute(String type, String listenEvent) {
         ListenEvent event = null;
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         try {

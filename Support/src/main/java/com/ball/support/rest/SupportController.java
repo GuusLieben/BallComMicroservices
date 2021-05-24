@@ -3,6 +3,7 @@ package com.ball.support.rest;
 import com.ball.support.models.SocketMessage;
 import com.ball.support.models.rest.UserName;
 import com.ball.support.repository.UserRepository;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -30,6 +31,7 @@ public class SupportController {
     public SupportController(RestTemplateBuilder templateBuilder, UserRepository repository) {
         this.templateBuilder = templateBuilder;
         this.repository = repository;
+        this.mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
     }
 
     @PostMapping("chat")

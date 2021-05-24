@@ -3,9 +3,9 @@ package nl.avans.infrastructure.repository;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import nl.avans.domain.models.Product;
+
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -15,11 +15,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
+import nl.avans.domain.models.Product;
+
 @Service
 @RequiredArgsConstructor
 public class ProductRepositoryMSSQL implements ProductRepository {
     private final ConnectionDB connectionDB;
     private ObjectMapper mapper = new ObjectMapper();
+
+    {
+        this.mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    }
 
     @Override
     public ArrayList<Product> get() {

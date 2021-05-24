@@ -2,16 +2,19 @@ package nl.avans.infrastructure.broker.events.listen;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import nl.avans.domain.models.events.basket.BasketEventModel;
 import nl.avans.domain.models.events.basket.CustomerAddedEvent;
 import nl.avans.domain.models.models.BasketItem;
 import nl.avans.domain.services.repository.BasketRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ public class BasketListenerFactory implements BasketListener {
     @Override
     public void execute(String type, String payload) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         try {
             Set<String> events = Set.of("CustomerAdded");

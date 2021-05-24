@@ -1,7 +1,13 @@
 package nl.avans.domain.models.aggregate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+
 import nl.avans.domain.models.events.basket.BasketEventModel;
 import nl.avans.domain.models.events.basket.BasketItemAddedEvent;
 import nl.avans.domain.models.events.basket.BasketItemRemovedEvent;
@@ -11,15 +17,13 @@ import nl.avans.domain.models.models.BasketItem;
 import nl.avans.domain.models.models.Customer;
 import nl.avans.domain.models.models.Product;
 import nl.avans.domain.services.aggregate.AggregateBasket;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 public class AggregateBasketEvents implements AggregateBasket {
     public Basket aggregate(ArrayList<BasketEventModel> events) {
         Basket basket = new Basket();
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         try {
             for (BasketEventModel event : events) {
                 switch (event.getEvent()) {

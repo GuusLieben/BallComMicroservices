@@ -3,6 +3,7 @@ package nl.avans.infrastructure.repository;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,10 @@ import nl.avans.domain.models.Basket;
 public class BasketRepositoryMSSQL implements BasketRepository {
     private final ConnectionDB connectionDB;
     private ObjectMapper mapper = new ObjectMapper();
+
+    {
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    }
 
     @Override
     public Basket get(UUID customerId) {

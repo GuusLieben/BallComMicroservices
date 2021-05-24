@@ -2,6 +2,7 @@ package com.ball.shipping.amqp;
 
 import com.ball.shipping.model.amqp.Event;
 import com.ball.shipping.model.amqp.order.OrderCreatedEvent;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.BeanFactory;
@@ -23,6 +24,10 @@ public enum MessageHandler {
     private final Class<? extends Event> eventType;
     private final Class<? extends Handler> handlerType;
     private final BiConsumer<Handler, Event> action;
+
+    static {
+        MAPPER.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    }
 
     @SuppressWarnings("unchecked")
     <T extends Event, H extends Handler> MessageHandler(Class<T> eventType, Class<H> handlerType, BiConsumer<H, T> action, String... headers) {

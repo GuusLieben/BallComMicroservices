@@ -14,12 +14,12 @@ import java.util.UUID;
 public class ProductController {
     private final ProductRepository productRepository;
 
-    @GetMapping("/products")
+    @GetMapping("api/products")
     public ArrayList<Product> get() {
         return productRepository.get();
     }
 
-    @GetMapping("/products/{productId}")
+    @GetMapping("api/products/{productId}")
     public Product get(@PathVariable("productId") UUID productId) {
         return productRepository.getById(productId);
     }

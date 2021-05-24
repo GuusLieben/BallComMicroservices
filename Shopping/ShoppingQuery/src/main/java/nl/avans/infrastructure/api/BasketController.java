@@ -13,7 +13,7 @@ import java.util.UUID;
 public class BasketController {
     private final BasketRepository basketRepository;
 
-    @GetMapping("/baskets/{customerId}")
+    @GetMapping("api/baskets/{customerId}")
     public Basket get(@PathVariable("customerId") UUID customerId) {
         return basketRepository.get(customerId);
     }

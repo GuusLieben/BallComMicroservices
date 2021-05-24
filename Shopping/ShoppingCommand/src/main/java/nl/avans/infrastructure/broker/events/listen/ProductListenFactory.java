@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import nl.avans.domain.models.events.product.ProductCreatedEvent;
 import nl.avans.domain.models.events.product.ProductEventModel;
+import nl.avans.domain.models.events.product.StockAddedEvent;
+import nl.avans.domain.models.events.product.StockRemovedEvent;
 import nl.avans.domain.models.models.Product;
 import nl.avans.domain.services.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,23 @@ public class ProductListenFactory implements ProductListener {
             if (events.contains(type)) {
                 ProductEventModel productEventModel = new ProductEventModel();
                 productEventModel.setEvent(type);
-                productEventModel.setProductId(mapper.readValue(payload, Product.class).getProductId());
-                productEventModel.setData(payload);
+                switch (type) {
+                    case "ProductCreated":
+                        ProductCreatedEvent productCreatedEvent = mapper.readValue(payload, ProductCreatedEvent.class);
+                        productEventModel.setProductId(productCreatedEvent.getProductId());
+                        productEventModel.setData(mapper.writeValueAsString(productCreatedEvent));
+                        break;
+                    case "StockAdded":
+                        StockAddedEvent stockAddedEvent = mapper.readValue(payload, StockAddedEvent.class);
+                        productEventModel.setProductId(stockAddedEvent.getProductId());
+                        productEventModel.setData(mapper.writeValueAsString(stockAddedEvent));
+                        break;
+                    case "StockRemoved":
+                        StockRemovedEvent stockRemovedEvent = mapper.readValue(payload, StockRemovedEvent.class);
+                        productEventModel.setProductId(stockRemovedEvent.getProductId());
+                        productEventModel.setData(mapper.writeValueAsString(stockRemovedEvent));
+                        break;
+                }
                 productRepository.create(productEventModel);
             }
         } catch (JsonProcessingException e) {
